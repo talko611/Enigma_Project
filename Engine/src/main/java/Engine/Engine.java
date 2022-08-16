@@ -1,9 +1,6 @@
 package Engine;
 
-import Engine.engineAnswers.EncryptDecryptMessage;
-import Engine.engineAnswers.InputOperationAnswer;
-import Engine.engineAnswers.MachineDetailsAnswer;
-import Engine.engineAnswers.StatisticsAnswer;
+import Engine.engineAnswers.*;
 
 public interface Engine {
     InputOperationAnswer loadFromFile(String filePath);
@@ -36,4 +33,6 @@ public interface Engine {
     EncryptDecryptMessage encryptDecrypt(String message) throws CloneNotSupportedException;
 
     StatisticsAnswer getStatistics() throws CloneNotSupportedException;
+
+    SizeOfElementAnswer getNumOfReflectors();
 }

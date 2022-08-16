@@ -2,10 +2,7 @@ package Engine;
 
 
 import Engine.configuration.ConfigurationImp;
-import Engine.engineAnswers.EncryptDecryptMessage;
-import Engine.engineAnswers.InputOperationAnswer;
-import Engine.engineAnswers.MachineDetailsAnswer;
-import Engine.engineAnswers.StatisticsAnswer;
+import Engine.engineAnswers.*;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.XMLLoader.FileReader;
 import Engine.XMLLoader.XMLLoaderImp;
@@ -44,6 +41,8 @@ public class EngineImp implements Engine{
             this.enigmaParts.saveMachineParts(reader.load());
             this.machine.setKeyboard(this.enigmaParts.getKeyboard());//set up keyBoard because it's the only part which doesn't need configuration
             this.statistics = new LinkedHashMap<>();
+            this.configurationImp.setCurrentConfiguration(null);
+            this.configurationImp.setStartConfiguration(null);
             success = true;
             message = "File loaded successfully";
         }catch (InstantiationError | InputMismatchException e){
@@ -87,18 +86,20 @@ public class EngineImp implements Engine{
     @Override
     public MachineDetailsAnswer getMachineDetails(){
         MachineDetailsAnswer answer = new MachineDetailsAnswer();
+        int numOfUsedRotors;
         int numOfPossibleRotors = this.enigmaParts.getRotors().size();
-        int numOfUsedRotors = this.machine.getRotors() == null ? 0 : this.machine.getRotors().size();
-        answer.setUsedVsAvailableRotors(numOfUsedRotors + "/" + numOfPossibleRotors);
         answer.setNumOfReflectors(this.enigmaParts.getReflectors().size());
         answer.setNumOfProcessedMessages(this.getNumberOfMessageProcessed());
-        if (numOfUsedRotors == 0) {
+        if (this.configurationImp.getStartConfiguration() == null) {
             answer.setMachineConfig(false);
+             numOfUsedRotors = 0;
         } else {
+            numOfUsedRotors = this.machine.getRotors().size();
             answer.setMachineConfig(true);
             answer.setInitialConfiguration(this.configurationImp.getStartConfiguration());
             answer.setCurrentState(this.configurationImp.getCurrentConfiguration());
         }
+        answer.setUsedVsAvailableRotors(numOfUsedRotors + "/" + numOfPossibleRotors);
         return answer;
     }
 
@@ -136,6 +137,13 @@ public class EngineImp implements Engine{
         Map<String, List<EncryptDecryptMessage>> statisticsCopy = SerializationUtils.clone(new LinkedHashMap<>(this.statistics));
         return new StatisticsAnswer(statisticsCopy);
     }
+    @Override
+    public SizeOfElementAnswer getNumOfReflectors(){
+        SizeOfElementAnswer answer = new SizeOfElementAnswer();
+        if(enigmaParts.getReflectors() != null) answer.setElementExists(true);
+        answer.setSize(enigmaParts.getReflectors().size());
+        return answer;
+    }
 
     private int getNumberOfMessageProcessed(){
         return statistics
@@ -158,22 +166,22 @@ public class EngineImp implements Engine{
         return new Pair<>(true, null);
     }
 
-    public static void main(String[] args) throws CloneNotSupportedException {
-        EngineImp engineImp = new EngineImp();
-        engineImp.loadFromFile("/Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-paper-enigma.xml");
-        engineImp.autoConfig();
-        EncryptDecryptMessage message = engineImp.encryptDecrypt("dafagfa");
-
-        printDetails(engineImp.getMachineDetails());
-
-
-//        engineImp.loadFromFile("/Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-small.xml");
+//    public static void main(String[] args) throws CloneNotSupportedException {
+//        EngineImp engineImp = new EngineImp();
+//        engineImp.loadFromFile("/Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-paper-enigma.xml");
 //        engineImp.autoConfig();
-//        System.out.println("done");
-    }
+//        EncryptDecryptMessage message = engineImp.encryptDecrypt("dafagfa");
+//
+//        printDetails(engineImp.getMachineDetails());
+//
+//
+////        engineImp.loadFromFile("/Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-small.xml");
+////        engineImp.autoConfig();
+////        System.out.println("done");
+//    }
 
      private static void printDetails(MachineDetailsAnswer detailsAnswer){
-         System.out.println("Machine details:");
+
         System.out.println("Rotor num use: " + detailsAnswer.getUsedVsAvailableRotors());
         System.out.println("Reflector number: " + detailsAnswer.getNumOfReflectors());
         System.out.println("Number of messages encrypt: " + detailsAnswer.getNumOfProcessedMessages());
@@ -187,11 +195,7 @@ public class EngineImp implements Engine{
     }
 
     private static void printStats(StatisticsAnswer statisticsAnswer){
-        System.out.println("statistics:");
-        statisticsAnswer.getStats().forEach((i,k) -> {
-            System.out.println(i);
-            k.forEach(s-> System.out.print(s.getSrc()+ "---> " + s.getOut() +" " + String.format("%,d\n", s.getDuration())));
-        });
+
     }
 
 }

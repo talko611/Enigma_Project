@@ -17,12 +17,6 @@ public class MachineImp implements Machine{
     private PlugBoard plugBoard;
     private Keyboard keyboard;
 
-    public MachineImp(List<Rotor> rotors, Reflector reflector, PlugBoard plugBord, Keyboard keyboard ){
-        this.rotors = rotors;
-        this.reflector = reflector;
-        this.plugBoard = plugBord;
-        this.keyboard = keyboard;
-    }
 
     public MachineImp(){
         this.rotors = null;

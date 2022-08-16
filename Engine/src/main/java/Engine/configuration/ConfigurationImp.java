@@ -30,10 +30,14 @@ public class ConfigurationImp {
         this.currentConfiguration = currentConfiguration;
     }
 
+    public void setStartConfiguration(String startConfiguration) {
+        this.startConfiguration = startConfiguration;
+    }
+
     public InputOperationAnswer manualConfigRotors(String configLine, EnigmaParts enigmaParts, Machine machine) {
         configLine = configLine.replaceAll(","," ");
         if(!configLine.matches("[\\d ]+")){
-            return new InputOperationAnswer(false, "Error - please enter only numbers seperated by space. need to enter at least 1 number(example: 12 23 1)");
+            return new InputOperationAnswer(false, "Error - please enter only numbers seperated by comma/space. you need to enter at least " + enigmaParts.getRotorCount() + " numbers (example: 12 23 1)");
         }
         List<Integer> rotorsIds = getRotorsNumbers(configLine);
         if(rotorsIds.size() > MAX_ROTORS_NUM || rotorsIds.size() < enigmaParts.getRotorCount()){
@@ -118,14 +122,17 @@ public class ConfigurationImp {
     private void autoConfigRotors(EnigmaParts enigmaParts, Machine machine,Random random){
         int maxRotorsInMachine = Math.min(enigmaParts.getRotors().size(), MAX_ROTORS_NUM);
         int amountOfRotors = random.nextInt(maxRotorsInMachine) + 1;
-        if(amountOfRotors < enigmaParts.getRotorCount()) amountOfRotors = enigmaParts.getRotorCount();
+        while(amountOfRotors< enigmaParts.getRotorCount() || amountOfRotors > maxRotorsInMachine){
+            amountOfRotors = random.nextInt(maxRotorsInMachine) + 1;
+        }
 
-        Set<Integer>chosenIds = new HashSet<>();
+        Set<Integer>chosenIds = new LinkedHashSet<>();
         while (chosenIds.size() != amountOfRotors){
             chosenIds.add(random.nextInt(amountOfRotors) + 1);
         }
         StringBuilder builder = new StringBuilder();
         chosenIds.forEach(i -> builder.append(i).append(" "));
+
 
         manualConfigRotors(builder.toString(), enigmaParts, machine);
     }

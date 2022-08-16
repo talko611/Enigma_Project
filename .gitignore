@@ -24,3 +24,6 @@ hs_err_pid*
 
 #enviorment repos
 *.idea
+*.DS_Store
+*.MF
+

@@ -54,6 +54,7 @@ public class EngineImp implements Engine{
 
     @Override
     public InputOperationAnswer manualConfigRotors(String rotorsConfigLine) {
+        if(machine.getRotors() != null) machine.reset();
         return configurationImp.manualConfigRotors(rotorsConfigLine, this.enigmaParts, this.machine);
     }
 
@@ -74,6 +75,7 @@ public class EngineImp implements Engine{
     }
     @Override
     public InputOperationAnswer autoConfig(){
+        if(machine.getRotors() != null) machine.reset();
         return   this.configurationImp.autoConfigMachine(enigmaParts, machine);
 
     }
@@ -164,38 +166,6 @@ public class EngineImp implements Engine{
             }
         }
         return new Pair<>(true, null);
-    }
-
-//    public static void main(String[] args) throws CloneNotSupportedException {
-//        EngineImp engineImp = new EngineImp();
-//        engineImp.loadFromFile("/Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-paper-enigma.xml");
-//        engineImp.autoConfig();
-//        EncryptDecryptMessage message = engineImp.encryptDecrypt("dafagfa");
-//
-//        printDetails(engineImp.getMachineDetails());
-//
-//
-////        engineImp.loadFromFile("/Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-small.xml");
-////        engineImp.autoConfig();
-////        System.out.println("done");
-//    }
-
-     private static void printDetails(MachineDetailsAnswer detailsAnswer){
-
-        System.out.println("Rotor num use: " + detailsAnswer.getUsedVsAvailableRotors());
-        System.out.println("Reflector number: " + detailsAnswer.getNumOfReflectors());
-        System.out.println("Number of messages encrypt: " + detailsAnswer.getNumOfProcessedMessages());
-        if(detailsAnswer.isMachineConfig()){
-            System.out.println("Initial config: " + detailsAnswer.getInitialConfiguration());
-            System.out.println("Current state: " + detailsAnswer.getCurrentState());
-        }
-        else{
-            System.out.println("Machine is not config yet!");
-        }
-    }
-
-    private static void printStats(StatisticsAnswer statisticsAnswer){
-
     }
 
 }

@@ -9,13 +9,11 @@ public interface Rotor {
 
     int getId();
 
-    int getOffsetPos();
-
     int getNotch();
 
     void setOffset(String letter);
 
-    String getOffset();
+    String getInitialOffset();
 
     @Override
     String toString();
@@ -23,4 +21,8 @@ public interface Rotor {
     void resetMoves();
 
     int getMoves();
+
+    String getCurrentOffset();
+
+    int getNotchStepsToZero();
 }

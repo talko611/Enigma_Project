@@ -57,7 +57,7 @@ public class RotorImp implements Rotor {
     }
 
     @Override
-    public String getOffset(){
+    public String getInitialOffset(){
         String str = null;
         for(Map.Entry<String, Integer>entry : letterToEntryPoint.entrySet()){
             if(entry.getValue() == this.offset){
@@ -66,9 +66,23 @@ public class RotorImp implements Rotor {
         }
         return str;
     }
+
     @Override
-    public int getOffsetPos(){
-        return offset;
+    public String getCurrentOffset(){
+        String str = null;
+        int currentOffset = Math.floorMod(offset + moves, inputToOutput.size());
+        for(Map.Entry<String, Integer> entry : letterToEntryPoint.entrySet()){
+            if(entry.getValue() == currentOffset){
+                str = entry.getKey();
+                break;
+            }
+        }
+        return str;
+    }
+
+    @Override
+    public int getNotchStepsToZero(){
+        return Math.floorMod(notch - (offset + moves), inputToOutput.size());
     }
 
     @Override

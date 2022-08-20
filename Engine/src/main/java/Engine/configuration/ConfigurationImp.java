@@ -246,15 +246,13 @@ public class ConfigurationImp {
         return idsWithMoreThenOneOccurrence == 0;
     }
 
-    private String buildRotorConfigLine(List<Rotor> rotors, int abcSize){
+    private String buildRotorConfigLine(List<Rotor> rotors){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<");
+        Rotor current;
         for(int i = rotors.size() -1; i >=0; --i){
-            Rotor current = rotors.get(i);
-            stringBuilder.append(current.getId())
-                            .append("(")
-                            .append(Math.floorMod(current.getNotch() - (current.getOffsetPos() + current.getMoves()),abcSize))
-                            .append(")");
+            current = rotors.get(i);
+            stringBuilder.append(current.getId());
             if(i != 0){
                 stringBuilder.append(",");
             }
@@ -265,8 +263,18 @@ public class ConfigurationImp {
 
     private String buildOffsetsConfigLine(List<Rotor> rotors){
         StringBuilder stringBuilder = new StringBuilder();
-        rotors.forEach(i ->stringBuilder.append(i.getOffset()));
-        return "<" + stringBuilder.reverse() + ">";
+        Rotor current;
+        for(int i = rotors.size() -1; i >= 0; --i){
+             current = rotors.get(i);
+             stringBuilder.append(current.getCurrentOffset())
+                     .append("(")
+                     .append(current.getNotchStepsToZero())
+                     .append(")");
+             if(i != 0){
+                 stringBuilder.append(",");
+             }
+        }
+        return "<" + stringBuilder + ">";
     }
 
     private String buildPlugBoardConfigLine(PlugBoard plugBord){
@@ -297,7 +305,7 @@ public class ConfigurationImp {
 
     public String createConfiguration(Machine machine){
         StringBuilder builder = new StringBuilder();
-        builder.append(buildRotorConfigLine(machine.getRotors(), machine.getKeyboard().getABC().size()));
+        builder.append(buildRotorConfigLine(machine.getRotors()));
         builder.append(buildOffsetsConfigLine(machine.getRotors()));
         builder.append("<").append(machine.getReflector().getId()).append(">");
         builder.append(buildPlugBoardConfigLine(machine.getPlugBord()));

@@ -22,9 +22,9 @@ public class ConsolePresentor {
     }
 
     public void start()  {
-        System.out.println("----------------------------------------");
+        System.out.println("---------------------------------------------------------");
         System.out.println("Welcome to Enigma Machine App");
-        System.out.println("----------------------------------------");
+        System.out.println("---------------------------------------------------------");
         presentMainManu();
         Scanner scanner = new Scanner(System.in);
         int choice;
@@ -76,6 +76,7 @@ public class ConsolePresentor {
     }
 
     void resetMachine(){
+        System.out.println("---------------------------------------------------------");
         if(isLoadFile){
             if(isConfigMachine){
                 this.engine.resetMachine();
@@ -90,6 +91,7 @@ public class ConsolePresentor {
         }
     }
     private void presentMainManu(){
+        System.out.println("---------------------------------------------------------");
         System.out.println("Please choose one of the following options:");
         System.out.println("1. Load from file");
         System.out.println("2. Present Machine details");
@@ -104,6 +106,7 @@ public class ConsolePresentor {
     private void loadFile(Scanner scanner){
         scanner.nextLine();
         boolean exit = false;
+        System.out.println("---------------------------------------------------------");
         System.out.println("Please enter a file path:");
         System.out.print(">>");
         InputOperationAnswer answer = engine.loadFromFile(scanner.nextLine());
@@ -128,7 +131,7 @@ public class ConsolePresentor {
                 }
             }
             else {
-                System.out.println(answer.getMessage()+ "\n");
+                System.out.println("\n" + answer.getMessage()+ "\n");
                 this.isLoadFile = true;
                 this.isConfigMachine = false;
                 exit = true;
@@ -137,6 +140,7 @@ public class ConsolePresentor {
     }
 
     private void autoConfig(){
+        System.out.println("---------------------------------------------------------");
         if(this.isLoadFile){
             InputOperationAnswer answer = this.engine.autoConfig();
             if(answer.isSuccess()) this.isConfigMachine = true;
@@ -148,6 +152,7 @@ public class ConsolePresentor {
     }
 
     private void presentMachineDetails(Scanner scanner){
+        System.out.println("---------------------------------------------------------");
         if(!isLoadFile) {
             System.out.println("Cannot present details. Machine is not loaded yet\n");
             return;
@@ -169,6 +174,8 @@ public class ConsolePresentor {
     }
 
     private void presentStatistics(Scanner scanner) {
+        System.out.println("---------------------------------------------------------");
+        AtomicInteger counter = new AtomicInteger();
         if (!this.isLoadFile){
             System.out.println("Stats are unavailable please load file first\n");
         return;
@@ -182,15 +189,17 @@ public class ConsolePresentor {
                 System.out.println("statistics:");
                 answer.getStats().forEach((i,k) -> {
                     System.out.println(i);
-                    k.forEach(s-> System.out.println("Source: " + s.getSrc() + " --->" + " Processed: " + s.getOut() + " Time: " + String.format("%,d", s.getDuration()) + " ns"));
+                    counter.set(1);
+                    k.forEach((s)-> {
+                        System.out.println(counter + ". <" + s.getSrc() + ">" + "-->" + "<" + s.getOut() + ">(" + String.format("%,d", s.getDuration()) + " ns)");
+                        counter.set(counter.incrementAndGet());
+                    });
                 });
             }
             subMenuLoadOrBack(scanner);
         }catch (CloneNotSupportedException e){
             System.out.println("We are sorry something went wrong with the stats.\nWe will make sure that the problem will be handled shortly");
         }
-
-
     }
 
     private void subMenuLoadOrBack(Scanner scanner) {
@@ -232,6 +241,7 @@ public class ConsolePresentor {
     }
 
     private void encryptDecrypt(Scanner scanner) {
+        System.out.println("---------------------------------------------------------");
         if(!isConfigMachine){
             System.out.println("Cannot process messages.\nPlease config machine first\n");
             return;
@@ -250,7 +260,7 @@ public class ConsolePresentor {
                 return;
             }
             if (answer.getSuccess()) {
-                System.out.println("Source: " + answer.getSrc() + " --->" + " Processed: " + answer.getOut() + " Time: " + String.format("%,d", answer.getDuration()) + " ns");
+                System.out.println("<" + answer.getSrc() + ">--><" + answer.getOut() + ">(" + String.format("%,d", answer.getDuration()) + " ns)");
             } else {
                 System.out.println(answer.getError());
             }
@@ -271,13 +281,13 @@ public class ConsolePresentor {
             } while (choice < 1 || choice > 4);
 
         } while (choice != 2 && choice != 4);
-
         if(choice == 2){
             loadFile(scanner);
         }
     }
 
     private void manualConfig(Scanner scanner){
+        System.out.println("---------------------------------------------------------");
         if(!isLoadFile){
             System.out.println("Please load from file before trying to config machine");
             return;
@@ -291,6 +301,7 @@ public class ConsolePresentor {
 
     private void manualConfigRotors(Scanner scanner){
         InputOperationAnswer answer;
+        System.out.println("---------------------------------------------------------");
         System.out.println("Please enter rotors ids seperated by comma/space. Enter the rotors' ids from right to left");
         System.out.println("Meaning most right rotor will be enter first(Example: input-> 3,2,1)\nrotors order in the machine will be rotor 3 is the most right 1 is the most left");
         scanner.nextLine();
@@ -304,10 +315,10 @@ public class ConsolePresentor {
 
     private void manualConfigOffsets(Scanner scanner){
         InputOperationAnswer answer;
+        System.out.println("---------------------------------------------------------");
         System.out.println("Please enter for each rotor you enter the letter you want to position the rotor on");
         System.out.println("Please enter the letter together in one line(example: LKI)");
         System.out.println("The order of the letter is correspond to the order you order the ids");
-//        scanner.nextLine();
         do {
             System.out.print(">>");
             answer = this.engine.manualConfigOffsets(scanner.nextLine());
@@ -317,6 +328,7 @@ public class ConsolePresentor {
     }
 
     private void manualConfigReflector(Scanner scanner){
+        System.out.println("---------------------------------------------------------");
         System.out.println("Please choose one of the following Reflectors(enter the decimal value of the reflector number");
         SizeOfElementAnswer reflectorNumAns = this.engine.getNumOfReflectors();
         int numOfReflectors = 0;
@@ -345,6 +357,7 @@ public class ConsolePresentor {
     }
 
     private void manualConfigPlugBoard(Scanner scanner){
+        System.out.println("---------------------------------------------------------");
         System.out.println("Please enter pair of letter you want to connect in the plug Board");
         System.out.println("note: All pairs should be write together");
         System.out.println("Example: input \"afghjk\" connects A<->F, G<->H, J<->k");
@@ -358,4 +371,5 @@ public class ConsolePresentor {
         }while (!answer.isSuccess());
         this.isConfigMachine = true;
     }
+
 }

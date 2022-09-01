@@ -6,6 +6,7 @@ import Engine.engineAnswers.*;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.XMLLoader.FileReader;
 import Engine.XMLLoader.XMLLoaderImp;
+import javafx.concurrent.Task;
 import javafx.util.Pair;
 import machine.Machine;
 import machine.MachineImp;

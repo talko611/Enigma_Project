@@ -1,7 +1,8 @@
 package Engine.XMLLoader;
 
 import Engine.enums.ReflectorGreekNums;
-import Engine.scheme_generated.*;
+import Engine.generated.CTEDecipher;
+import Engine.generated.*;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.xml.bind.JAXBContext;
@@ -19,6 +20,7 @@ import java.util.stream.IntStream;
 
 public class XMLLoaderImp implements FileReader {
     private File file;
+    private static final int MAX_AGENTS = 50;
 
     public XMLLoaderImp(String filePath) throws  InstantiationError {
         Path path = Paths.get(filePath);
@@ -44,6 +46,7 @@ public class XMLLoaderImp implements FileReader {
         isRotorsCountValid(cteMachine.getRotorsCount(), rotors.getCTERotor().size());
         isAllRotorsValid(rotors, cteMachine.getABC().trim().length());
         isReflectorsValid(cteMachine.getCTEReflectors(), cteMachine.getABC().length());
+        isAgentsNumValid(cteEnigma.getCTEDecipher());
         return cteEnigma;
     }
 
@@ -157,5 +160,11 @@ public class XMLLoaderImp implements FileReader {
             reflectorMapping.put(input, output);
             reflectorMapping.put(output, input);
         }
+    }
+
+    private void isAgentsNumValid(CTEDecipher decipher){
+        int agentsNum = decipher.getAgents();
+        if(agentsNum < 2 || agentsNum > MAX_AGENTS )
+            throw  new InputMismatchException("Number of deciphers' agents is not between 2 to 50");
     }
 }

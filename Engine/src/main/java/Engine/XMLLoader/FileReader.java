@@ -1,6 +1,6 @@
 package Engine.XMLLoader;
 
-import Engine.scheme_generated.CTEEnigma;
+import Engine.generated.CTEEnigma;
 
 public interface FileReader {
     CTEEnigma load();

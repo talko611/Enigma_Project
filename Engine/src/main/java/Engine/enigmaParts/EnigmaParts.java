@@ -1,7 +1,8 @@
 package Engine.enigmaParts;
 
+import Engine.Decipher.Decipher;
 import Engine.enums.ReflectorGreekNums;
-import Engine.scheme_generated.*;
+import Engine.generated.*;
 import machine.parts.keyboard.Keyboard;
 import machine.parts.keyboard.KeyboardImp;
 import machine.parts.reflector.Reflector;
@@ -9,18 +10,16 @@ import machine.parts.reflector.ReflectorImp;
 import machine.parts.rotor.Rotor;
 import machine.parts.rotor.RotorImp;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EnigmaParts {
     private Map<Integer, Rotor> rotors;
     private  Map<Integer, Reflector> reflectors;
     private Keyboard keyboard;
-
     private int rotorCount;
+
+    private Decipher decipher;
 
 
     public Map<Integer, Rotor> getRotors() {
@@ -51,6 +50,7 @@ public class EnigmaParts {
         this.rotors = saveRotors(cteMachine.getCTERotors());
         this.reflectors = saveReflectors(cteMachine.getCTEReflectors());
         this.rotorCount = cteMachine.getRotorsCount();
+        this.decipher = saveDecipher(enigma.getCTEDecipher());
     }
 
     private Keyboard saveKeyboard(String abc){
@@ -108,5 +108,17 @@ public class EnigmaParts {
             }
         }
         return res;
+    }
+
+    private Decipher saveDecipher(CTEDecipher cteDecipher){
+        Set<String> dictionary = new HashSet<>();
+        String exclude = "[" + cteDecipher.getCTEDictionary().getExcludeChars().trim() + "]";
+        Scanner scanner = new Scanner(cteDecipher.getCTEDictionary().getWords().trim());
+        String currentWord;
+        while (scanner.hasNext()){
+            currentWord = scanner.next().replaceAll(exclude, "");
+            dictionary.add(currentWord);
+        }
+        return new Decipher(dictionary);
     }
 }

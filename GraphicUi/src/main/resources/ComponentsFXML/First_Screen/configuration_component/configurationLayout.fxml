@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.firstScreen.configComponent.machineConfigController">
+   <content>
+      <GridPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="221.66842651367188" minWidth="10.0" prefWidth="116.01591491699219" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.9840850830078" minWidth="10.0" prefWidth="131.9840850830078" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.66844177246094" minWidth="10.0" prefWidth="85.68437194824219" />
+          <ColumnConstraints hgrow="NEVER" maxWidth="150.0" minWidth="10.0" prefWidth="112.98941040039062" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="89.66842651367188" minWidth="10.0" prefWidth="73.01058959960938" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="Add Rotor" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <ChoiceBox fx:id="rotorIdCh" accessibleText="Rotor ID" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
+            <Button fx:id="addRotorBt" focusTraversable="false" mnemonicParsing="false" onAction="#addRotor" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <Label text="Add plug" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Button fx:id="addPlugBt" focusTraversable="false" mnemonicParsing="false" onAction="#addPlug" text="Add" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <Label text="Add Reflector" GridPane.columnIndex="5" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Button focusTraversable="false" mnemonicParsing="false" onAction="#manualConfig" prefHeight="25.0" prefWidth="130.0" text="Manual Config" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="8" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <Button focusTraversable="false" mnemonicParsing="false" onAction="#autoConfig" prefHeight="25.0" prefWidth="130.0" text="Auto Config" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="8" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <Label fx:id="isMachineConfigureLb" alignment="CENTER" text="Machine is configure" visible="false" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
+            <Label minWidth="250.0" text="Rotors will be inserted from right to left" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+            <ChoiceBox fx:id="rotorOffsetCh" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ChoiceBox fx:id="plugChoice1" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <ChoiceBox fx:id="plugChoice2" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+            <ChoiceBox fx:id="reflectorCh" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+   </content>
+</ScrollPane>

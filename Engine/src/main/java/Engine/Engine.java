@@ -1,6 +1,7 @@
 package Engine;
 
 import Engine.engineAnswers.*;
+import Engine.enigmaParts.EnigmaParts;
 
 public interface Engine {
     InputOperationAnswer loadFromFile(String filePath);
@@ -35,4 +36,5 @@ public interface Engine {
     StatisticsAnswer getStatistics() throws CloneNotSupportedException;
 
     SizeOfElementAnswer getNumOfReflectors();
+    EnigmaParts getEnigmaParts();
 }

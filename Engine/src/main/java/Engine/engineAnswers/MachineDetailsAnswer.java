@@ -2,6 +2,8 @@ package Engine.engineAnswers;
 
 public class MachineDetailsAnswer {
     private String usedVsAvailableRotors;
+    private int possibleRotorsNum;
+    private int usedRotorNum;
     private int numOfReflectors;
     private int numOfProcessedMessages;
     private String initialConfiguration;
@@ -54,5 +56,21 @@ public class MachineDetailsAnswer {
 
     public boolean isMachineConfig() {
         return isMachineConfig;
+    }
+
+    public int getPossibleRotorsNum() {
+        return possibleRotorsNum;
+    }
+
+    public int getUsedRotorNum() {
+        return usedRotorNum;
+    }
+
+    public void setPossibleRotorsNum(int possibleRotorsNum) {
+        this.possibleRotorsNum = possibleRotorsNum;
+    }
+
+    public void setUsedRotorNum(int usedRotorNum) {
+        this.usedRotorNum = usedRotorNum;
     }
 }

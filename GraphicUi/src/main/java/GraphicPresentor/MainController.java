@@ -1,8 +1,9 @@
 package GraphicPresentor;
 
-import Engine.Engine;
+import Engine.*;
 import Engine.engineAnswers.InputOperationAnswer;
 import Engine.engineAnswers.MachineDetailsAnswer;
+import GraphicPresentor.firstScreen.configComponent.MachineConfigController;
 import GraphicPresentor.firstScreen.machineDetailsComponent.MachineDetailController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,6 +28,9 @@ public class MainController {
     @FXML private Tab bruteForceTab;
     @FXML private ScrollPane machineDetailsComponent;
     @FXML private MachineDetailController machineDetailsComponentController;
+    @FXML private ScrollPane machineConfigureComponent;
+
+    @FXML private MachineConfigController machineConfigureComponentController;
 
     private SimpleBooleanProperty isFileLoaded;
     private SimpleBooleanProperty isConfigMachine;
@@ -38,6 +42,7 @@ public class MainController {
 
 
     public MainController(){
+        this.engine = new EngineImp();
         this.isFileLoaded = new SimpleBooleanProperty(false);
         this.isConfigMachine = new SimpleBooleanProperty(false);
         this.initConfig = new SimpleStringProperty(" Unavailable");
@@ -48,7 +53,16 @@ public class MainController {
         this.machineTab.disableProperty().bind(isFileLoaded.not());
         this.encryptDecryptTab.disableProperty().bind(isConfigMachine.not());
         this.bruteForceTab.disableProperty().bind(isConfigMachine.not());
-        this.machineDetailsComponentController.bindConfigurations(initConfig, currConfig, isFileLoaded);
+        this.machineDetailsComponentController.bindConfigurations(initConfig, currConfig,isFileLoaded);
+        this.machineConfigureComponentController.setEngine(engine);
+        this.machineConfigureComponentController.connectBinding(isConfigMachine);
+        this.isFileLoaded.addListener(((observable, oldValue, newValue) -> {
+            if(newValue) {
+                setMachineDetails();
+                machineConfigureComponentController.initData();
+                isConfigMachine.set(false);
+            }
+        }));
 
         //Set combo box items
     }
@@ -69,18 +83,13 @@ public class MainController {
         InputOperationAnswer answer = this.engine.loadFromFile(absolutePath);
         this.isFileLoaded.set(answer.isSuccess());
         this.loadFileAnswerLabel.setText(answer.getMessage());
-        setMachineDetails();
     }
 
     public void setMachineDetails(){
         MachineDetailsAnswer answer = this.engine.getMachineDetails();
         initConfig.set(answer.getInitialConfiguration() == null ? "Machine is not config yet" : answer.getInitialConfiguration());
         currConfig.set(answer.getCurrentState() == null ? "Machine is not config yet" : answer.getCurrentState());
-        this.machineDetailsComponentController.updateState(answer.getUsedVsAvailableRotors(), String.valueOf(answer.getNumOfReflectors()), String.valueOf(answer.getNumOfProcessedMessages()));
-    }
-
-    public void setEngine(Engine engine){
-        this.engine = engine;
+        this.machineDetailsComponentController.updateState(answer.getUsedRotorNum() + "/" + answer.getPossibleRotorsNum(), String.valueOf(answer.getNumOfReflectors()), String.valueOf(answer.getNumOfProcessedMessages()));
     }
 
     public void setPrimaryStage(Stage primaryStage) {

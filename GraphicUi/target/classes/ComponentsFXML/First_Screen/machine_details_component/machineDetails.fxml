@@ -13,7 +13,7 @@
           <ColumnConstraints />
             <ColumnConstraints hgrow="NEVER" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
           <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="50.0" />
         </columnConstraints>
         <rowConstraints>

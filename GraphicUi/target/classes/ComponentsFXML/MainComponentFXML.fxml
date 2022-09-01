@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.MainController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.MainController">
    <content>
-      <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
+      <BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
          <top>
             <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="TOP_LEFT">
               <columnConstraints>
@@ -42,18 +42,22 @@
             </GridPane>
          </top>
          <center>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER">
+            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
               <tabs>
                 <Tab fx:id="machineTab" closable="false" disable="true" text="Machine">
                      <content>
-                        <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" side="LEFT" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" side="LEFT" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
                             <Tab fx:id="machineDetailsTab" closable="false" text="Deatails">
                                  <content>
                                      <fx:include fx:id="machineDetailsComponent" source="First_Screen/machine_details_component/machineDetails.fxml" />
                                  </content>
                               </Tab>
-                            <Tab fx:id="configTab" text="Config" />
+                            <Tab fx:id="configTab" text="Config">
+                                <content>
+                                    <fx:include fx:id="machineConfigureComponent"  source="First_Screen/configuration_component/configurationLayout.fxml" />
+                                </content>
+                            </Tab>
                               <Tab fx:id="currentConfigurationTab" text="Current Configuration">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />

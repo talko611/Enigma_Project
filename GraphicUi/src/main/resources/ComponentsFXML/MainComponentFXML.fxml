@@ -7,7 +7,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -53,15 +52,15 @@
                                      <fx:include fx:id="machineDetailsComponent" source="First_Screen/machine_details_component/machineDetails.fxml" />
                                  </content>
                               </Tab>
-                            <Tab fx:id="configTab" text="Config">
+                            <Tab fx:id="configTab" onSelectionChanged="#configTabClick" text="Config">
                                 <content>
-                                    <fx:include fx:id="machineConfigureComponent"  source="First_Screen/configuration_component/configurationLayout.fxml" />
+                                    <fx:include fx:id="machineConfigureComponent" source="First_Screen/configuration_component/configurationLayout.fxml" />
                                 </content>
                             </Tab>
-                              <Tab fx:id="currentConfigurationTab" text="Current Configuration">
-                                <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                </content>
+                              <Tab fx:id="currentConfigTab" onSelectionChanged="#currentConfigTabClicked" text="Current Configuration">
+                                  <content>
+                                      <fx:include fx:id="currentConfigurationTabComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" source="First_Screen/current_state_component/currentComponentLayout.fxml" />
+                                  </content>
                               </Tab>
                           </tabs>
                         </TabPane>

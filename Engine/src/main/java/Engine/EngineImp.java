@@ -95,16 +95,13 @@ public class EngineImp implements Engine{
         answer.setNumOfProcessedMessages(this.getNumberOfMessageProcessed());
         if (this.configurationImp.getStartConfiguration() == null) {
             answer.setMachineConfig(false);
-//             numOfUsedRotors = 0;
             answer.setUsedRotorNum(0);
         } else {
-//            numOfUsedRotors = this.machine.getRotors().size();
             answer.setUsedRotorNum(this.machine.getRotors().size());
             answer.setMachineConfig(true);
             answer.setInitialConfiguration(this.configurationImp.getStartConfiguration());
             answer.setCurrentState(this.configurationImp.getCurrentConfiguration());
         }
-//        answer.setUsedVsAvailableRotors(numOfUsedRotors + "/" + numOfPossibleRotors);
         return answer;
     }
 

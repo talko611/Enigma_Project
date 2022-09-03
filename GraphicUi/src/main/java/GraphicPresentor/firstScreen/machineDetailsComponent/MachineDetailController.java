@@ -1,8 +1,8 @@
 package GraphicPresentor.firstScreen.machineDetailsComponent;
 
-import GraphicPresentor.MainController;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
+import Engine.Engine;
+import Engine.engineAnswers.MachineDetailsAnswer;
+import GraphicPresentor.UiAdapter;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -19,15 +19,18 @@ public class MachineDetailController {
     @FXML private Label currConfigurationAns;
     @FXML private Label machineNotLoadedLb;
 
-    public void bindConfigurations(SimpleStringProperty initConfiguration, SimpleStringProperty currentConfiguration , SimpleBooleanProperty isLoaded){
-        this.initConfigurationAns.textProperty().bind(initConfiguration);
-        this.currConfigurationAns.textProperty().bind(currentConfiguration);
-        this.machineNotLoadedLb.visibleProperty().bind(isLoaded.not());
+    private UiAdapter uiAdapter;
+
+    public void bind(){
+        initConfigurationAns.textProperty().bind(uiAdapter.initialConfigurationProperty());
+        currConfigurationAns.textProperty().bind(uiAdapter.currentConfigurationProperty());
+        machineNotLoadedLb.visibleProperty().bind(uiAdapter.isLoadedProperty().not());
+        usedVsAvailAns.textProperty().bind(uiAdapter.usedVsPossibleRotorsProperty());
+        processedMessagesAns.textProperty().bind(uiAdapter.processedMessagesNumProperty());
+        reflectorNumAns.textProperty().bind(uiAdapter.reflectorsNumProperty());
     }
 
-    public void updateState(String usedVsAvailRotors, String reflectorNum, String processedMessages){
-        this.usedVsAvailAns.setText(usedVsAvailRotors);
-        this.reflectorNumAns.setText(reflectorNum);
-        this.processedMessagesAns.setText(processedMessages);
+    public void setUiAdapter(UiAdapter uiAdapter){
+        this.uiAdapter = uiAdapter;
     }
 }

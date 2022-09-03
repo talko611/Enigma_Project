@@ -10,7 +10,7 @@
 
 <ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.firstScreen.configComponent.MachineConfigController">
    <content>
-      <GridPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+      <GridPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="configurationStyle.css">
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="221.66842651367188" minWidth="10.0" prefWidth="116.01591491699219" />
@@ -41,13 +41,13 @@
             <Label text="Add Reflector" GridPane.columnIndex="5" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <Button focusTraversable="false" mnemonicParsing="false" onAction="#manualConfig" prefHeight="25.0" prefWidth="130.0" text="Manual Config" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="8" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
             <Button focusTraversable="false" mnemonicParsing="false" onAction="#autoConfig" prefHeight="25.0" prefWidth="130.0" text="Auto Config" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="8" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-            <Label fx:id="isMachineConfigureLb" alignment="CENTER" text="Machine is configure" visible="false" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
-            <Label minWidth="250.0" text="Rotors will be inserted from right to left" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+            <Label fx:id="isMachineConfigureLb" alignment="CENTER" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
+            <Label fx:id="rotorLb" minWidth="250.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
             <ChoiceBox fx:id="rotorOffsetCh" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <ChoiceBox fx:id="plugChoice1" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
             <ChoiceBox fx:id="plugChoice2" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
             <ChoiceBox fx:id="reflectorCh" focusTraversable="false" maxHeight="25.0" maxWidth="130.0" prefHeight="25.0" prefWidth="130.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-            <Label fx:id="plugErrorMs" text="Cannot connet plug to itself" textFill="RED" visible="false" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+            <Label fx:id="plugErrorMs" textFill="RED" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
          </children>
       </GridPane>
    </content>

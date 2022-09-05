@@ -252,13 +252,7 @@ public class ConsolePresentor {
             scanner.nextLine();
             System.out.println("Please enter a message to process");
             System.out.print(">>");
-            try {
-                answer = this.engine.encryptDecrypt(scanner.nextLine());
-            } catch (CloneNotSupportedException e) {
-                System.out.println("Something went wrong with machine");
-                System.out.println("Please try to enter different configuration or load another file");
-                return;
-            }
+            answer = this.engine.encryptDecryptMessage(scanner.nextLine(),true);
             if (answer.getSuccess()) {
                 System.out.println("<" + answer.getSrc() + ">--><" + answer.getOut() + ">(" + String.format("%,d", answer.getDuration()) + " ns)");
             } else {

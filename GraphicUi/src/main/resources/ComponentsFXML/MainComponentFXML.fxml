@@ -66,7 +66,23 @@
                         </TabPane>
                      </content>
                   </Tab>
-                <Tab fx:id="encryptDecryptTab" closable="false" disable="true" text="Encrypte/Decrypt" />
+                <Tab fx:id="encryptDecryptTab" closable="false" disable="true" text="Encrypt/Decrypt">
+                     <content>
+                        <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" side="LEFT" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                              <Tab text="Encrypt">
+                                  <content>
+                                      <fx:include fx:id="encryptDecryptComponent" source="Second_Screen/encryptDecryptComponent/encryptDecryptComponentLayout.fxml" />
+                                  </content>
+                              </Tab>
+                            <Tab onSelectionChanged="#statisticsTabClicked" text="Statistics">
+                              <content>
+                                <fx:include fx:id="statisticsComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="Second_Screen/statisticsComponent/statisticsComponentLayout.fxml" />
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
+                     </content></Tab>
                   <Tab fx:id="bruteForceTab" closable="false" disable="true" text="Brute Force" />
               </tabs>
             </TabPane>

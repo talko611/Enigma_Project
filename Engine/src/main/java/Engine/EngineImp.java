@@ -106,9 +106,10 @@ public class EngineImp implements Engine{
     }
 
     @Override
-    public EncryptDecryptMessage encryptDecrypt(String message) throws CloneNotSupportedException {
+    public EncryptDecryptMessage encryptDecryptMessage(String message,boolean saveStats) {
         EncryptDecryptMessage response = new EncryptDecryptMessage();
         Pair<Boolean,String> isValid = isAllLettersValid(message.toUpperCase());
+        StringBuilder builder = new StringBuilder();
         if(!isValid.getKey()){
             response.setSuccess(false);
             response.setError("Error - Letter " + isValid.getValue() + "is not in machine ABC, please enter only letters from the abc " + machine.getKeyboard().getABC().keySet());
@@ -116,22 +117,34 @@ public class EngineImp implements Engine{
         else {
             response.setSrc(message);
             Instant start = Instant.now();
-            response.setOut(machine.encryptDecrypt(message));
+            for(int i = 0; i < message.length(); ++i){
+                builder.append(machine.encryptDecrypt(String.valueOf(message.charAt(i))));
+            }
+            response.setOut(builder.toString());
             Instant end = Instant.now();
             response.setDuration(Duration.between(start, end).toNanos());
             response.setSuccess(true);
             this.configurationImp.setCurrentConfiguration(configurationImp.createConfiguration(this.machine));
-            String currentConfiguration = configurationImp.getStartConfiguration();
-            if (statistics.containsKey(currentConfiguration))
-                statistics.get(currentConfiguration).add((EncryptDecryptMessage) response.clone());
-            else {
-                List<EncryptDecryptMessage> lst = new ArrayList<>();
-                lst.add((EncryptDecryptMessage) response.clone());
-                statistics.put(currentConfiguration, lst);
+            try{
+                if(saveStats){
+                    saveEncryptionData(response);
+                }
+            }catch (CloneNotSupportedException e){
+                System.out.println("Couldn't save to statistics: (" + response.getSrc() + ") Encryption");
             }
-
         }
         return response;
+    }
+
+    public void saveEncryptionData(EncryptDecryptMessage data) throws CloneNotSupportedException {
+        String currentConfiguration = configurationImp.getStartConfiguration();
+        if (statistics.containsKey(currentConfiguration))
+            statistics.get(currentConfiguration).add((EncryptDecryptMessage) data.clone());
+        else {
+            List<EncryptDecryptMessage> lst = new ArrayList<>();
+            lst.add((EncryptDecryptMessage) data.clone());
+            statistics.put(currentConfiguration, lst);
+        }
     }
 
     @Override

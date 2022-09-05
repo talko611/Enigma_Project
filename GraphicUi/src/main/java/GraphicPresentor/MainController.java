@@ -2,10 +2,11 @@ package GraphicPresentor;
 
 import Engine.*;
 import Engine.engineAnswers.InputOperationAnswer;
-import Engine.engineAnswers.MachineDetailsAnswer;
-import GraphicPresentor.firstScreen.configComponent.MachineConfigController;
-import GraphicPresentor.firstScreen.currentConfiguration.CurrentConfigurationController;
-import GraphicPresentor.firstScreen.machineDetailsComponent.MachineDetailController;
+import GraphicPresentor.Screens.firstScreen.configComponent.MachineConfigController;
+import GraphicPresentor.Screens.firstScreen.currentConfiguration.CurrentConfigurationController;
+import GraphicPresentor.Screens.firstScreen.machineDetailsComponent.MachineDetailController;
+import GraphicPresentor.Screens.secondScreen.encryptDecryptComponent.EncryptDecryptController;
+import GraphicPresentor.Screens.secondScreen.statisticsComponent.StatisticsController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -31,8 +32,11 @@ public class MainController {
     @FXML private ScrollPane machineConfigureComponent;
     @FXML private MachineConfigController machineConfigureComponentController;
     @FXML private ScrollPane currentConfigurationTabComponent;
-
     @FXML private CurrentConfigurationController currentConfigurationTabComponentController;
+    @FXML private ScrollPane encryptDecryptComponent;
+    @FXML private EncryptDecryptController encryptDecryptComponentController;
+    @FXML private ScrollPane statisticsComponent;
+    @FXML private StatisticsController statisticsComponentController;
 
 
 
@@ -51,6 +55,7 @@ public class MainController {
         machineTab.disableProperty().bind(uiAdapter.isLoadedProperty().not());
         encryptDecryptTab.disableProperty().bind(uiAdapter.isConfigProperty().not());
         bruteForceTab.disableProperty().bind(uiAdapter.isConfigProperty().not());
+        currentConfigTab.disableProperty().bind(uiAdapter.isConfigProperty().not());
 
         machineDetailsComponentController.setUiAdapter(uiAdapter);
         machineDetailsComponentController.bind();
@@ -59,6 +64,11 @@ public class MainController {
         machineConfigureComponentController.setUiAdapter(uiAdapter);
 
         currentConfigurationTabComponentController.setUiAdapter(uiAdapter);
+
+        encryptDecryptComponentController.setEngine(engine);
+        encryptDecryptComponentController.setUi(uiAdapter);
+
+        statisticsComponentController.setEngine(engine);
 
     }
 
@@ -95,6 +105,11 @@ public class MainController {
 
     @FXML void currentConfigTabClicked(){
         currentConfigurationTabComponentController.getCurrentConfiguration();
+    }
+
+    @FXML
+    void statisticsTabClicked(){
+        statisticsComponentController.setStatistics();
     }
 
 }

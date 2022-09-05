@@ -61,24 +61,38 @@ public class MachineImp implements Machine{
     @Override
     public Keyboard getKeyboard(){return this.keyboard;}
 
+//    @Override
+//    public String encryptDecrypt(String input){
+//        input = input.toUpperCase();
+//        StringBuilder outPut = new StringBuilder();
+//        int entryPoint;
+//        for(int i = 0; i < input.length(); ++i){
+//            moveRotors();
+//            entryPoint = keyboard.getEntryPointByKey(plugBoard.switchLetters(String.valueOf(input.charAt(i))));
+//            for(Rotor rotor : rotors){
+//                entryPoint = rotor.scramble(entryPoint, RotorDirection.In);
+//            }
+//            entryPoint = reflector.reflect(entryPoint);
+//            for (int j  = rotors.size() -1; j >= 0; --j){
+//                entryPoint = rotors.get(j).scramble(entryPoint, RotorDirection.Out);
+//            }
+//            outPut.append(plugBoard.switchLetters(keyboard.getEntryMatchKey(entryPoint)));
+//        }
+//        return outPut.toString();
+//    }
     @Override
     public String encryptDecrypt(String input){
         input = input.toUpperCase();
-        StringBuilder outPut = new StringBuilder();
-        int entryPoint;
-        for(int i = 0; i < input.length(); ++i){
-            moveRotors();
-            entryPoint = keyboard.getEntryPointByKey(plugBoard.switchLetters(String.valueOf(input.charAt(i))));
-            for(Rotor rotor : rotors){
-                entryPoint = rotor.scramble(entryPoint, RotorDirection.In);
-            }
-            entryPoint = reflector.reflect(entryPoint);
-            for (int j  = rotors.size() -1; j >= 0; --j){
-                entryPoint = rotors.get(j).scramble(entryPoint, RotorDirection.Out);
-            }
-            outPut.append(plugBoard.switchLetters(keyboard.getEntryMatchKey(entryPoint)));
+        moveRotors();
+        int entryPoint = keyboard.getEntryPointByKey(plugBoard.switchLetters(input));
+        for(Rotor rotor : rotors){
+            entryPoint = rotor.scramble(entryPoint, RotorDirection.In);
         }
-        return outPut.toString();
+        entryPoint = reflector.reflect(entryPoint);
+        for(int i = rotors.size() -1; i >= 0; --i){
+            entryPoint = rotors.get(i).scramble(entryPoint, RotorDirection.Out);
+        }
+        return plugBoard.switchLetters(keyboard.getEntryMatchKey(entryPoint));
     }
 
     private void moveRotors(){

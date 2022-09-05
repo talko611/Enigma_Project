@@ -31,7 +31,9 @@ public interface Engine {
 
     MachineDetailsAnswer getMachineDetails();
 
-    EncryptDecryptMessage encryptDecrypt(String message) throws CloneNotSupportedException;
+    EncryptDecryptMessage encryptDecryptMessage(String message,boolean saveStats);
+
+    void saveEncryptionData(EncryptDecryptMessage data) throws CloneNotSupportedException;
 
     StatisticsAnswer getStatistics() throws CloneNotSupportedException;
 

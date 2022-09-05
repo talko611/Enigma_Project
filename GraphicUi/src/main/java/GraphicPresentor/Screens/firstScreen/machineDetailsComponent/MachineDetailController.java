@@ -1,4 +1,4 @@
-package GraphicPresentor.firstScreen.machineDetailsComponent;
+package GraphicPresentor.Screens.firstScreen.machineDetailsComponent;
 
 import Engine.Engine;
 import Engine.engineAnswers.MachineDetailsAnswer;

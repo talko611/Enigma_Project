@@ -1,8 +1,12 @@
 package machine.parts.rotor;
 
 import machine.enums.RotorDirection;
+import org.apache.commons.lang3.SerializationUtils;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RotorImp implements Rotor {
     private final int notch;
@@ -10,10 +14,6 @@ public class RotorImp implements Rotor {
     private int moves;
     private  int offset;
     private Map<String, Integer> letterToEntryPoint;
-
-
-
-
     private final int id;
 
     public RotorImp(int id,int notch, Map<Integer, Integer> rotorMapping,Map<String,Integer> letterToEntryPoint, int offset ){
@@ -23,6 +23,15 @@ public class RotorImp implements Rotor {
         this.moves = 0;
         this.inputToOutput = rotorMapping;
         this.letterToEntryPoint = letterToEntryPoint;
+    }
+
+    public RotorImp(RotorImp copyFrom){
+        this.notch = copyFrom.notch;
+        this.inputToOutput = SerializationUtils.clone( new HashMap<>(copyFrom.inputToOutput));
+        this.moves = 0;
+        this.offset = 0;
+        letterToEntryPoint = SerializationUtils.clone(new HashMap<>(copyFrom.letterToEntryPoint));
+        id = copyFrom.id;
     }
 
 

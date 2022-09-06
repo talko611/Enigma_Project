@@ -2,6 +2,8 @@ package Engine;
 
 import Engine.engineAnswers.*;
 import Engine.enigmaParts.EnigmaParts;
+import Engine.enums.DmTaskDifficulty;
+import machine.Machine;
 
 public interface Engine {
     InputOperationAnswer loadFromFile(String filePath);
@@ -39,4 +41,9 @@ public interface Engine {
 
     SizeOfElementAnswer getNumOfReflectors();
     EnigmaParts getEnigmaParts();
+
+    long initializeDm(DmTaskDifficulty difficulty, String encrypted, int allowedAgents, int taskSize);
+
+    //Test func
+    Machine getMachine();
 }

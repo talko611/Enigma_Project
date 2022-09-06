@@ -1,5 +1,8 @@
 package machine.parts.keyboard;
 
+import org.apache.commons.lang3.SerializationUtils;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,6 +21,11 @@ public class KeyboardImp implements Keyboard {
                 .boxed()
                 .collect(Collectors.toMap(keyToEntryPoint::get, i->i));
     }
+
+    public KeyboardImp (KeyboardImp copyFrom){
+        this.alphabetToEntryNum = SerializationUtils.clone(new HashMap<>(copyFrom.alphabetToEntryNum));
+    }
+
     @Override
     public boolean isKeyExists(String key) {
         return alphabetToEntryNum.containsKey(key);

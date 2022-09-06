@@ -307,7 +307,7 @@ public class ConfigurationImp {
         StringBuilder builder = new StringBuilder();
         builder.append(buildRotorConfigLine(machine.getRotors()));
         builder.append(buildOffsetsConfigLine(machine.getRotors()));
-        builder.append("<").append(machine.getReflector().getId()).append(">");
+        builder.append("<").append(machine.getReflector().getSymbol()).append(">");
         builder.append(buildPlugBoardConfigLine(machine.getPlugBord()));
         return builder.toString();
     }

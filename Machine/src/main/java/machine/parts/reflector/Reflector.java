@@ -2,5 +2,6 @@ package machine.parts.reflector;
 
 public interface Reflector {
     int reflect(int input);
-    String getId();
+    String getSymbol();
+    int getId();
 }

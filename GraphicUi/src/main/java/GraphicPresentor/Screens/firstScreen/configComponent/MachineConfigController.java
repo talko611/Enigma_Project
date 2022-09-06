@@ -1,7 +1,6 @@
 package GraphicPresentor.Screens.firstScreen.configComponent;
 
 import Engine.*;
-import Engine.engineAnswers.MachineDetailsAnswer;
 import GraphicPresentor.*;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.enums.ReflectorGreekNums;
@@ -10,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -122,7 +120,7 @@ public class MachineConfigController {
         rotorIdCh.getItems().remove(0, rotorIdCh.getItems().size());
         enigmaParts.getRotors().forEach((id,rotor) -> {rotorIdCh.getItems().add(id);});
         reflectorCh.getItems().remove(0, reflectorCh.getItems().size());
-        enigmaParts.getReflectors().forEach((num, reflector) -> reflectorCh.getItems().add(reflector.getId()));
+        enigmaParts.getReflectors().forEach((num, reflector) -> reflectorCh.getItems().add(reflector.getSymbol()));
         plugChoice1.getItems().remove(0, plugChoice1.getItems().size());
         plugChoice2.getItems().remove(0, plugChoice2.getItems().size());
         rotorOffsetCh.getItems().remove(0, rotorOffsetCh.getItems().size());

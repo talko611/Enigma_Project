@@ -1,16 +1,21 @@
 package Engine;
 
 
+import Engine.DM.DecipherManager;
 import Engine.configuration.ConfigurationImp;
 import Engine.engineAnswers.*;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.XMLLoader.FileReader;
 import Engine.XMLLoader.XMLLoaderImp;
-import javafx.concurrent.Task;
+import Engine.enums.DmTaskDifficulty;
 import javafx.util.Pair;
 import machine.Machine;
 import machine.MachineImp;
 import machine.parts.keyboard.Keyboard;
+import machine.parts.reflector.Reflector;
+import machine.parts.reflector.ReflectorImp;
+import machine.parts.rotor.Rotor;
+import machine.parts.rotor.RotorImp;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.time.Duration;
@@ -22,8 +27,9 @@ public class EngineImp implements Engine{
     public Machine machine;
     private final EnigmaParts enigmaParts;
     private  Map<String,List<EncryptDecryptMessage>> statistics;
-
     private final ConfigurationImp configurationImp;
+
+    private DecipherManager decipherManager;
 
 
 
@@ -41,6 +47,7 @@ public class EngineImp implements Engine{
             FileReader reader = new XMLLoaderImp(filePath);
             this.enigmaParts.saveMachineParts(reader.load());
             this.machine.setKeyboard(this.enigmaParts.getKeyboard());//set up keyBoard because it's the only part which doesn't need configuration
+            this.decipherManager = enigmaParts.getDecipherManager();
             this.statistics = new LinkedHashMap<>();
             this.configurationImp.setCurrentConfiguration(null);
             this.configurationImp.setStartConfiguration(null);
@@ -162,6 +169,25 @@ public class EngineImp implements Engine{
 
     public EnigmaParts getEnigmaParts(){return this.enigmaParts;}
 
+    @Override
+    public long initializeDm(DmTaskDifficulty difficulty, String encrypted, int allowedAgents, int taskSize){
+        List<Integer> rotorsIds = new ArrayList<>();
+        machine.getRotors().forEach(i -> rotorsIds.add(i.getId()));
+
+        switch (difficulty){
+            case EASY:
+                decipherManager.setRotorsId(rotorsIds);
+                decipherManager.setReflectorId(machine.getReflector().getId());
+                break;
+            case MEDIUM:
+            case HARD:
+                decipherManager.setRotorsId(rotorsIds);
+                break;
+        }
+        decipherManager.setMachineParts(enigmaParts);
+        return decipherManager.initializeDm(difficulty, encrypted, allowedAgents, taskSize);
+    }
+
     private int getNumberOfMessageProcessed(){
         return statistics
                 .values()
@@ -183,4 +209,21 @@ public class EngineImp implements Engine{
         return new Pair<>(true, null);
     }
 
+    @Override
+    public Machine getMachine() {
+        return machine;
+    }
+
+    public static void main(String[] args) {
+        Engine engine = new EngineImp();
+        engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml");
+        engine.autoConfig();
+//        long res = engine.initializeDm(DmTaskDifficulty.IMPOSSIBLE, "Rakfj", 10, 100);
+//        System.out.println(res);
+        Reflector copyFrom = engine.getMachine().getReflector();
+        Reflector copy = new ReflectorImp((ReflectorImp) copyFrom);
+        System.out.println("Copy from address: " + System.identityHashCode(copyFrom) + " copy address: "+ System.identityHashCode(copy));
+    }
 }
+
+

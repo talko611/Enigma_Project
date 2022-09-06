@@ -25,4 +25,5 @@ public interface Rotor {
     String getCurrentOffset();
 
     int getNotchStepsToZero();
+
 }

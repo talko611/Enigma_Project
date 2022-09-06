@@ -1,6 +1,6 @@
 package Engine.enigmaParts;
 
-import Engine.Decipher.Decipher;
+import Engine.DM.DecipherManager;
 import Engine.enums.ReflectorGreekNums;
 import Engine.generated.*;
 import machine.parts.keyboard.Keyboard;
@@ -18,8 +18,7 @@ public class EnigmaParts {
     private  Map<Integer, Reflector> reflectors;
     private Keyboard keyboard;
     private int rotorCount;
-
-    private Decipher decipher;
+    private DecipherManager decipherManager;
 
 
     public Map<Integer, Rotor> getRotors() {
@@ -50,7 +49,7 @@ public class EnigmaParts {
         this.rotors = saveRotors(cteMachine.getCTERotors());
         this.reflectors = saveReflectors(cteMachine.getCTEReflectors());
         this.rotorCount = cteMachine.getRotorsCount();
-        this.decipher = saveDecipher(enigma.getCTEDecipher());
+        this.decipherManager = saveDecipher(enigma.getCTEDecipher());
     }
 
     private Keyboard saveKeyboard(String abc){
@@ -90,7 +89,12 @@ public class EnigmaParts {
             inputOutPut.put(input,output);
             inputOutPut.put(output, input);
         });
-        return new ReflectorImp(inputOutPut, cteReflector.getId());
+        List<Integer> id = Arrays.stream(ReflectorGreekNums.values())
+                .filter(i -> i.getSymbol().equals(cteReflector.getId()))
+                .map(ReflectorGreekNums::getVal)
+                .collect(Collectors.toList());
+
+        return new ReflectorImp(inputOutPut, cteReflector.getId(), id.get(0));
     }
 
     private Map<Integer, Reflector> saveReflectors(CTEReflectors cteReflectors){
@@ -110,7 +114,7 @@ public class EnigmaParts {
         return res;
     }
 
-    private Decipher saveDecipher(CTEDecipher cteDecipher){
+    private DecipherManager saveDecipher(CTEDecipher cteDecipher){
         Set<String> dictionary = new HashSet<>();
         String exclude = "[" + cteDecipher.getCTEDictionary().getExcludeChars().trim() + "]";
         Scanner scanner = new Scanner(cteDecipher.getCTEDictionary().getWords().trim());
@@ -119,6 +123,10 @@ public class EnigmaParts {
             currentWord = scanner.next().replaceAll(exclude, "");
             dictionary.add(currentWord);
         }
-        return new Decipher(dictionary);
+        return new DecipherManager(dictionary, cteDecipher.getAgents());
+    }
+
+    public DecipherManager getDecipherManager() {
+        return decipherManager;
     }
 }

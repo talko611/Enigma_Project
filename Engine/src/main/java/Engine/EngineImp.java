@@ -1,6 +1,7 @@
 package Engine;
 
 
+import Engine.DM.CalculationsUtils;
 import Engine.DM.DecipherManager;
 import Engine.configuration.ConfigurationImp;
 import Engine.engineAnswers.*;
@@ -215,14 +216,22 @@ public class EngineImp implements Engine{
     }
 
     public static void main(String[] args) {
-        Engine engine = new EngineImp();
-        engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml");
-        engine.autoConfig();
-//        long res = engine.initializeDm(DmTaskDifficulty.IMPOSSIBLE, "Rakfj", 10, 100);
-//        System.out.println(res);
-        Reflector copyFrom = engine.getMachine().getReflector();
-        Reflector copy = new ReflectorImp((ReflectorImp) copyFrom);
-        System.out.println("Copy from address: " + System.identityHashCode(copyFrom) + " copy address: "+ System.identityHashCode(copy));
+//        Engine engine = new EngineImp();
+//        engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml");
+//        engine.autoConfig();
+////        long res = engine.initializeDm(DmTaskDifficulty.IMPOSSIBLE, "Rakfj", 10, 100);
+////        System.out.println(res);
+//        Reflector copyFrom = engine.getMachine().getReflector();
+//        Reflector copy = new ReflectorImp((ReflectorImp) copyFrom);
+//        System.out.println("Copy from address: " + System.identityHashCode(copyFrom) + " copy address: "+ System.identityHashCode(copy));
+        List <Integer> ids = new ArrayList<>();
+        ids.add(1);
+        ids.add(2);
+        ids.add(4);
+        List<List<Integer>> res = CalculationsUtils.allPermutationOfNElements(ids);
+        for(List<Integer> lst : res){
+            System.out.println(lst);
+        }
     }
 }
 

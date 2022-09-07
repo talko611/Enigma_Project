@@ -1,5 +1,6 @@
 package Engine.DM;
 
+import Engine.DM.DectyptionTask.DecryptionTask;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.enums.DmTaskDifficulty;
 
@@ -18,7 +19,7 @@ public class DecipherManager {
     private int taskSize;
     private ExecutorService agents;
 
-    private BlockingQueue<?> tasks;
+    private BlockingQueue<DecryptionTask> tasks;
     private BlockingQueue<?> answers;
 
 
@@ -33,7 +34,7 @@ public class DecipherManager {
         this.taskSize = taskSize;
         this.difficulty = taskDifficulty;
         this.agents = Executors.newFixedThreadPool(numberOfAgentsAllowed);
-        this.tasks = new ArrayBlockingQueue<>(numberOfAgentsAllowed * 10); //To do - find out how to limit the blocking queue
+        this.tasks = new ArrayBlockingQueue<>(numberOfAgentsAllowed * 10);
         this.answers = new LinkedBlockingQueue<>();
         return calculateNumberOfTasks();
     }
@@ -50,7 +51,7 @@ public class DecipherManager {
                 numberOfTasks /= taskSize;
                 break;
             case HARD:
-                numberOfTasks = factorial(rotorsId.size());
+                numberOfTasks = CalculationsUtils.factorial(rotorsId.size());
                 numberOfTasks *= machineParts.getReflectors().size();
                 numberOfTasks *= (long) Math.pow(machineParts.getKeyboard().getABC().size(), rotorsId.size());
                 numberOfTasks /= taskSize;
@@ -59,23 +60,13 @@ public class DecipherManager {
                 long total = 0;
                 int possibleRotors = machineParts.getRotors().size();
                 for(int i = machineParts.getRotorCount(); i <= Math.min(possibleRotors, 99); ++i){
-                    total += (long) (permutations_k_of_n(possibleRotors, i) *
+                    total += (long) (CalculationsUtils.NumOfPermutations_k_of_n(possibleRotors, i) *
                             Math.pow(machineParts.getKeyboard().getABC().size(), i)) *
                             machineParts.getReflectors().size();
                 }
                 numberOfTasks = total / taskSize;
         }
         return numberOfTasks;
-    }
-
-    private long factorial(int k){
-        long permutationNum = 1;
-        for(; k > 0; permutationNum *= k, k--);
-        return permutationNum;
-    }
-
-    private long permutations_k_of_n(int n, int k){
-        return factorial(n)/ factorial(n-k);
     }
 
     public Set<String> getDictionary() {

@@ -1,8 +1,7 @@
 package Engine.DM;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.google.common.collect.Sets;
+import java.util.*;
 
 public class CalculationsUtils {
     static public long factorial(int k){
@@ -35,7 +34,9 @@ public class CalculationsUtils {
         return permutations;
     }
 
-
+    static public  Set<Set<Integer>> add_All_Sub_Groups_SizeK_Out_Of_N_Elements(Set<Integer> elements, int groupSize){
+        return Sets.combinations(elements, groupSize);
+    }
 
 
 

@@ -1,12 +1,15 @@
 package Engine.DM.DectyptionTask;
 
 
+import Engine.configuration.ConfigurationImp;
 import machine.Machine;
 import machine.parts.keyboard.Keyboard;
 import machine.parts.rotor.Rotor;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class DecryptionTask implements Runnable{
     private final Machine machine;
@@ -14,28 +17,41 @@ public class DecryptionTask implements Runnable{
     List<Integer> initialConfig;
     private final Set<String> dictionary;
     private final String encryptedStr;
+    private final ConfigurationImp configurator;
+
+    private final Consumer<Integer> updateNumOfTasks;
 
 
 
-    public DecryptionTask(Machine machine,List<Integer> initialConfig, int taskSize, Set<String> dictionary, String encryptedStr) {
+
+    public DecryptionTask(Machine machine,List<Integer> initialConfig, int taskSize, Set<String> dictionary, String encryptedStr, Consumer<Integer> updateNumOfTasks) {
         this.machine = machine;
         this.taskSize = taskSize;
         this.dictionary = dictionary;
         this.encryptedStr = encryptedStr;
         this.initialConfig = initialConfig;
+        this.configurator = new ConfigurationImp();
+        this.updateNumOfTasks = updateNumOfTasks;
     }
 
     @Override
     public void run() {
+//        System.out.println(Thread.currentThread().getName() + " Starting task");
         String currenDecryption;
 
         for(int i = 0; i < taskSize; ++i){
             setOffset();
             currenDecryption = decrypt();
             if(isOptionalDecryption(currenDecryption)){
-                //Enter to result queue
+                System.out.println("Found optional Decryption by " + Thread.currentThread().getName());
+                System.out.println("Decrypted message is :" + currenDecryption);
+                System.out.println("Machine configuration is " + configurator.createConfiguration(this.machine));
             }
             move();
+        }
+//        System.out.println(Thread.currentThread().getName() + " Finish tasks");
+        synchronized (updateNumOfTasks){
+//            updateNumOfTasks.accept( taskSize);
         }
     }
 

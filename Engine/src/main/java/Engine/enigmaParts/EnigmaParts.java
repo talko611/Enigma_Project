@@ -121,9 +121,9 @@ public class EnigmaParts {
         String currentWord;
         while (scanner.hasNext()){
             currentWord = scanner.next().replaceAll(exclude, "");
-            dictionary.add(currentWord);
+            dictionary.add(currentWord.toUpperCase());
         }
-        return new DecipherManager(dictionary, cteDecipher.getAgents());
+        return new DecipherManager(dictionary, cteDecipher.getAgents(), cteDecipher.getCTEDictionary().getExcludeChars().trim());
     }
 
     public DecipherManager getDecipherManager() {

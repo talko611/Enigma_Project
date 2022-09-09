@@ -71,7 +71,7 @@ public class EncryptDecryptController {
     @FXML
     void processButtonClicked(ActionEvent event)  {
         if (srcTextField.getText().length() != 0) {
-            EncryptDecryptMessage answer = engine.encryptDecryptMessage(srcTextField.getText(), true);
+            EncryptDecryptMessage answer = engine.encryptDecryptMessage(srcTextField.getText(), true,false);
             encryptedTextField.setText(answer.getSuccess() ? answer.getOut() : answer.getError());
             uiAdapter.setProcessedMessagesNum(String.valueOf(engine.getMachineDetails().getNumOfProcessedMessages()));
             uiAdapter.setCurrentConfiguration(engine.getMachineDetails().getCurrentState());
@@ -89,7 +89,7 @@ public class EncryptDecryptController {
     @FXML
     void typedFromKeyboard(KeyEvent event){
         if(typeRb.isSelected()){
-            EncryptDecryptMessage message = engine.encryptDecryptMessage(event.getCharacter(), false);
+            EncryptDecryptMessage message = engine.encryptDecryptMessage(event.getCharacter(), false, false);
             if(message.getSuccess()){
                 encryptedTextField.setText(encryptedTextField.getText() == null ? "" : encryptedTextField.getText() + message.getOut());
                 duration += message.getDuration();

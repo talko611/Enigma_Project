@@ -9,19 +9,18 @@ import Engine.enigmaParts.EnigmaParts;
 import Engine.XMLLoader.FileReader;
 import Engine.XMLLoader.XMLLoaderImp;
 import Engine.enums.DmTaskDifficulty;
+import javafx.scene.Parent;
 import javafx.util.Pair;
 import machine.Machine;
 import machine.MachineImp;
 import machine.parts.keyboard.Keyboard;
-import machine.parts.reflector.Reflector;
-import machine.parts.reflector.ReflectorImp;
-import machine.parts.rotor.Rotor;
-import machine.parts.rotor.RotorImp;
+import machine.parts.plugBoard.PlugBoardImp;
 import org.apache.commons.lang3.SerializationUtils;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 public class EngineImp implements Engine{
@@ -114,7 +113,7 @@ public class EngineImp implements Engine{
     }
 
     @Override
-    public EncryptDecryptMessage encryptDecryptMessage(String message,boolean saveStats) {
+    public EncryptDecryptMessage encryptDecryptMessage(String message,boolean saveStats, boolean decipherState) {
         EncryptDecryptMessage response = new EncryptDecryptMessage();
         Pair<Boolean,String> isValid = isAllLettersValid(message.toUpperCase());
         StringBuilder builder = new StringBuilder();
@@ -123,6 +122,15 @@ public class EngineImp implements Engine{
             response.setError("Error - Letter " + isValid.getValue() + "is not in machine ABC, please enter only letters from the abc " + machine.getKeyboard().getABC().keySet());
         }
         else {
+            if(decipherState){
+                Pair<Boolean,String> isAllWordInDictionary = this.decipherManager.isAllWordsInDictionary(message);
+                if(!isAllWordInDictionary.getKey()){
+                    response.setSuccess(false);
+                    response.setError("Error - message contains words that are not in the dictionary");
+                    return response;
+                }
+                message = isAllWordInDictionary.getValue();
+            }
             response.setSrc(message);
             Instant start = Instant.now();
             for(int i = 0; i < message.length(); ++i){
@@ -188,6 +196,10 @@ public class EngineImp implements Engine{
         decipherManager.setMachineParts(enigmaParts);
         return decipherManager.initializeDm(difficulty, encrypted, allowedAgents, taskSize);
     }
+    @Override
+    public void startBruteForce(){
+        this.decipherManager.startBruteForce();
+    }
 
     private int getNumberOfMessageProcessed(){
         return statistics
@@ -216,23 +228,22 @@ public class EngineImp implements Engine{
     }
 
     public static void main(String[] args) {
-//        Engine engine = new EngineImp();
-//        engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml");
-//        engine.autoConfig();
-////        long res = engine.initializeDm(DmTaskDifficulty.IMPOSSIBLE, "Rakfj", 10, 100);
-////        System.out.println(res);
-//        Reflector copyFrom = engine.getMachine().getReflector();
-//        Reflector copy = new ReflectorImp((ReflectorImp) copyFrom);
-//        System.out.println("Copy from address: " + System.identityHashCode(copyFrom) + " copy address: "+ System.identityHashCode(copy));
-        List <Integer> ids = new ArrayList<>();
-        ids.add(1);
-        ids.add(2);
-        ids.add(4);
-        List<List<Integer>> res = CalculationsUtils.allPermutationOfNElements(ids);
-        for(List<Integer> lst : res){
-            System.out.println(lst);
-        }
+        Engine engine = new EngineImp();
+        System.out.println(engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml").getMessage());
+        engine.autoConfig();
+        engine.getMachine().setPlugBord(new PlugBoardImp(new HashMap<>()));
+        engine.manualConfigPlugBoard("");
+        System.out.println(engine.getMachineDetails().getCurrentState());
+        EncryptDecryptMessage message= engine.encryptDecryptMessage("leg character terms",false,true);
+        System.out.println("Emcryption method in decipher mode is : " + (message.getSuccess() ? "Success" : "failed"));
+        long num = engine.initializeDm(DmTaskDifficulty.MEDIUM, message.getOut(), 3, 100);
+        System.out.println("NUmber of Tasks : " + num);
+        engine.startBruteForce();
+
+
     }
 }
 
+///Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-paper-enigma.xml
 
+//

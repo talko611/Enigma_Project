@@ -33,7 +33,7 @@ public interface Engine {
 
     MachineDetailsAnswer getMachineDetails();
 
-    EncryptDecryptMessage encryptDecryptMessage(String message,boolean saveStats);
+    EncryptDecryptMessage encryptDecryptMessage(String message,boolean saveStats, boolean decipherState);
 
     void saveEncryptionData(EncryptDecryptMessage data) throws CloneNotSupportedException;
 
@@ -43,7 +43,9 @@ public interface Engine {
     EnigmaParts getEnigmaParts();
 
     long initializeDm(DmTaskDifficulty difficulty, String encrypted, int allowedAgents, int taskSize);
+    void startBruteForce();
 
     //Test func
     Machine getMachine();
+
 }

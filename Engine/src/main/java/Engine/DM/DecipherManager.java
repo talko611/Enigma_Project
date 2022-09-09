@@ -1,52 +1,83 @@
 package Engine.DM;
 
-import Engine.DM.DectyptionTask.DecryptionTask;
+import Engine.DM.TaskProducer.TaskProducer;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.enums.DmTaskDifficulty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.util.Pair;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class DecipherManager {
     private Set<String> dictionary;
+    private  String forbiddenChars;
     private  int maxAgents;
     private EnigmaParts machineParts;
     private List<Integer> rotorsId;
     private int reflectorId;
     private DmTaskDifficulty difficulty;
-    private long  numberOfTasks;
+//    private Long  numberOfTasks;
     private int taskSize;
-    private ExecutorService agents;
+    private ThreadPoolExecutor agents;
+    private BlockingQueue<Runnable> tasks;
+    private BlockingQueue<Runnable> answers;
+    private String messageToDecrypt;
 
-    private BlockingQueue<DecryptionTask> tasks;
-    private BlockingQueue<?> answers;
+    private SimpleLongProperty numberOfTasks;
 
 
 
-    public DecipherManager(Set<String> dictionary, int maxAgents){
+
+    public DecipherManager(Set<String> dictionary, int maxAgents, String forbiddenChars){
         this.dictionary = dictionary;
         this.maxAgents = maxAgents;
+        this.forbiddenChars = forbiddenChars;
+        this.numberOfTasks = new SimpleLongProperty(0);
     }
 
 
     public long initializeDm(DmTaskDifficulty taskDifficulty, String encryptedStr, int numberOfAgentsAllowed, int taskSize){
         this.taskSize = taskSize;
         this.difficulty = taskDifficulty;
-        this.agents = Executors.newFixedThreadPool(numberOfAgentsAllowed);
         this.tasks = new ArrayBlockingQueue<>(numberOfAgentsAllowed * 10);
+        this.agents= new ThreadPoolExecutor(numberOfAgentsAllowed, numberOfAgentsAllowed, 0L, TimeUnit.MILLISECONDS, this.tasks, new ThreadFactory() {
+            private int threadCounter = 1;
+            @Override
+            public Thread newThread(@NotNull Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setName("Agent num :" + threadCounter++);
+                return thread;
+            }
+        });
         this.answers = new LinkedBlockingQueue<>();
+        this.messageToDecrypt= encryptedStr;
         return calculateNumberOfTasks();
+    }
+
+    public void startBruteForce(){
+        Consumer<Integer> updateTaskStatus = (taskSize) ->{
+            this.numberOfTasks.set(this.numberOfTasks.get() - taskSize);
+            System.out.println("Number of Tasks left: " + this.numberOfTasks.get());
+        };
+        agents.prestartAllCoreThreads();
+        new Thread(new TaskProducer(this.machineParts, this.difficulty, this.dictionary, this.messageToDecrypt,this.taskSize, this.tasks, this.rotorsId, this.reflectorId ,updateTaskStatus)).start();
     }
 
 
     public long calculateNumberOfTasks(){
+        long numberOfTasks = 0;
         switch (difficulty){
             case EASY:
                 numberOfTasks = (long) Math.pow(machineParts.getKeyboard().getABC().size(), rotorsId.size())/ taskSize;
                 break;
             case MEDIUM:
-                numberOfTasks = machineParts.getReflectors().size();
+                numberOfTasks = (long) machineParts.getReflectors().size();
                 numberOfTasks *= (long) Math.pow(machineParts.getKeyboard().getABC().size(), rotorsId.size());
                 numberOfTasks /= taskSize;
                 break;
@@ -66,6 +97,7 @@ public class DecipherManager {
                 }
                 numberOfTasks = total / taskSize;
         }
+        this.numberOfTasks.set(numberOfTasks);
         return numberOfTasks;
     }
 
@@ -88,4 +120,24 @@ public class DecipherManager {
     public void setReflectorId(int reflectorId) {
         this.reflectorId = reflectorId;
     }
+
+    public Pair<Boolean,String> isAllWordsInDictionary(String message){
+        List<String> words = Arrays.asList(message.split(" "));
+        words = words.stream()
+                .map(word -> word.replaceAll("[" + forbiddenChars + "]", "").toUpperCase())
+                .collect(Collectors.toList());
+        for(String word : words){
+            if(!dictionary.contains(word)){
+                return new Pair<>(false, message);
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        words.forEach(word -> builder.append(word).append(" "));
+        builder.trimToSize();
+        builder.deleteCharAt(builder.toString().length() -1);
+        return new Pair<>(true, builder.toString());
+    }
+
+
+
 }

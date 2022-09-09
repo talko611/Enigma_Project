@@ -252,7 +252,7 @@ public class ConsolePresentor {
             scanner.nextLine();
             System.out.println("Please enter a message to process");
             System.out.print(">>");
-            answer = this.engine.encryptDecryptMessage(scanner.nextLine(),true);
+            answer = this.engine.encryptDecryptMessage(scanner.nextLine(),true,false);
             if (answer.getSuccess()) {
                 System.out.println("<" + answer.getSrc() + ">--><" + answer.getOut() + ">(" + String.format("%,d", answer.getDuration()) + " ns)");
             } else {

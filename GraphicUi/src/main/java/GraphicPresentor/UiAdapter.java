@@ -13,6 +13,7 @@ public class UiAdapter {
     private SimpleStringProperty usedVsPossibleRotors;
     private SimpleStringProperty processedMessagesNum;
     private SimpleStringProperty reflectorsNum;
+    private SimpleStringProperty bruteForceEncryptedMessage;
 
     private Engine engine;
 
@@ -25,7 +26,12 @@ public class UiAdapter {
         usedVsPossibleRotors = new SimpleStringProperty();
         processedMessagesNum = new SimpleStringProperty();
         reflectorsNum = new SimpleStringProperty();
+        bruteForceEncryptedMessage = new SimpleStringProperty();
         this.engine = engine;
+    }
+
+    public SimpleStringProperty bruteForceEncryptedMessageProperty() {
+        return bruteForceEncryptedMessage;
     }
 
     public String getReflectorsNum() {

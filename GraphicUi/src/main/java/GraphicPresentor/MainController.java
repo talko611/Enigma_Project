@@ -7,12 +7,14 @@ import GraphicPresentor.Screens.firstScreen.currentConfiguration.CurrentConfigur
 import GraphicPresentor.Screens.firstScreen.machineDetailsComponent.MachineDetailController;
 import GraphicPresentor.Screens.secondScreen.encryptDecryptComponent.EncryptDecryptController;
 import GraphicPresentor.Screens.secondScreen.statisticsComponent.StatisticsController;
+import GraphicPresentor.Screens.thridScreen.EncryptMessageComponent.BruteForceEncryptController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.script.Bindings;
 import java.io.File;
 
 public class MainController {
@@ -37,6 +39,8 @@ public class MainController {
     @FXML private EncryptDecryptController encryptDecryptComponentController;
     @FXML private ScrollPane statisticsComponent;
     @FXML private StatisticsController statisticsComponentController;
+    @FXML private ScrollPane bruteEncryptComponent;
+    @FXML private BruteForceEncryptController bruteEncryptComponentController;
 
 
 
@@ -69,6 +73,14 @@ public class MainController {
         encryptDecryptComponentController.setUi(uiAdapter);
 
         statisticsComponentController.setEngine(engine);
+
+        bruteEncryptComponentController.setEngine(engine);
+        bruteEncryptComponentController.setUiAdapter(uiAdapter);
+        uiAdapter.isConfigProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue){
+                bruteEncryptComponentController.getDecipherDetails();
+            }
+        });
 
     }
 
@@ -110,6 +122,11 @@ public class MainController {
     @FXML
     void statisticsTabClicked(){
         statisticsComponentController.setStatistics();
+    }
+
+    @FXML
+    void bruteEncryptTabClicked(){
+        bruteEncryptComponentController.initSuccessMessage();
     }
 
 }

@@ -70,12 +70,12 @@
                      <content>
                         <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" side="LEFT" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                              <Tab text="Encrypt">
+                              <Tab closable="false" text="Encrypt">
                                   <content>
                                       <fx:include fx:id="encryptDecryptComponent" source="Second_Screen/encryptDecryptComponent/encryptDecryptComponentLayout.fxml" />
                                   </content>
                               </Tab>
-                            <Tab onSelectionChanged="#statisticsTabClicked" text="Statistics">
+                            <Tab closable="false" onSelectionChanged="#statisticsTabClicked" text="Statistics">
                               <content>
                                 <fx:include fx:id="statisticsComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="Second_Screen/statisticsComponent/statisticsComponentLayout.fxml" />
                               </content>
@@ -83,7 +83,17 @@
                           </tabs>
                         </TabPane>
                      </content></Tab>
-                  <Tab fx:id="bruteForceTab" closable="false" disable="true" text="Brute Force" />
+                  <Tab fx:id="bruteForceTab" closable="false" disable="true" text="Brute Force">
+                     <content>
+                        <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" side="LEFT" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab closable="false" onSelectionChanged="#bruteEncryptTabClicked" text="Encrypt Message">
+                                <fx:include fx:id="bruteEncryptComponent" source="ThirdScreen/bruteForceEncryptLayout.fxml" />
+                            </Tab>
+                            <Tab closable="false" text="Activate Brute Force" />
+                          </tabs>
+                        </TabPane>
+                     </content></Tab>
               </tabs>
             </TabPane>
          </center>

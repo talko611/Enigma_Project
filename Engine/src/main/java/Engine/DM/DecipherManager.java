@@ -28,7 +28,6 @@ public class DecipherManager {
     private BlockingQueue<Runnable> tasks;
     private BlockingQueue<Runnable> answers;
     private String messageToDecrypt;
-
     private SimpleLongProperty numberOfTasks;
 
 
@@ -103,6 +102,10 @@ public class DecipherManager {
 
     public Set<String> getDictionary() {
         return dictionary;
+    }
+
+    public int getMaxAgents() {
+        return maxAgents;
     }
 
     public void setMachineParts(EnigmaParts machineParts) {

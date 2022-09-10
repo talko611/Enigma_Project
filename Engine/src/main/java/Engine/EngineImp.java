@@ -114,6 +114,7 @@ public class EngineImp implements Engine{
 
     @Override
     public EncryptDecryptMessage encryptDecryptMessage(String message,boolean saveStats, boolean decipherState) {
+        message = message.toUpperCase();
         EncryptDecryptMessage response = new EncryptDecryptMessage();
         Pair<Boolean,String> isValid = isAllLettersValid(message.toUpperCase());
         StringBuilder builder = new StringBuilder();
@@ -227,6 +228,22 @@ public class EngineImp implements Engine{
         return machine;
     }
 
+    @Override
+    public DmAnswer getDmDetails(){
+        DmAnswer answer= new DmAnswer();
+        answer.setDictionary(decipherManager.getDictionary());
+        answer.setMaxAgents(decipherManager.getMaxAgents());
+        return answer;
+    }
+
+    @Override
+    public void removePlugsFromMachine(){
+        this.machine .setPlugBord(new PlugBoardImp(new HashMap<>()));
+        String newConfiguration = configurationImp.createConfiguration(machine);
+        configurationImp.setCurrentConfiguration(newConfiguration);
+        configurationImp.setStartConfiguration(newConfiguration);
+    }
+
     public static void main(String[] args) {
         Engine engine = new EngineImp();
         System.out.println(engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml").getMessage());
@@ -234,10 +251,10 @@ public class EngineImp implements Engine{
         engine.getMachine().setPlugBord(new PlugBoardImp(new HashMap<>()));
         engine.manualConfigPlugBoard("");
         System.out.println(engine.getMachineDetails().getCurrentState());
-        EncryptDecryptMessage message= engine.encryptDecryptMessage("leg character terms",false,true);
-        System.out.println("Emcryption method in decipher mode is : " + (message.getSuccess() ? "Success" : "failed"));
-        long num = engine.initializeDm(DmTaskDifficulty.MEDIUM, message.getOut(), 3, 100);
-        System.out.println("NUmber of Tasks : " + num);
+        EncryptDecryptMessage message= engine.encryptDecryptMessage("element fire",false,true);
+        System.out.println("Encryption method in decipher mode is : " + (message.getSuccess() ? "Success" : "failed"));
+        long num = engine.initializeDm(DmTaskDifficulty.EASY, message.getOut(), 3, 100);
+        System.out.println("Number of Tasks : " + num);
         engine.startBruteForce();
 
 

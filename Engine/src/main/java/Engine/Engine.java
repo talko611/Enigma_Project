@@ -48,4 +48,8 @@ public interface Engine {
     //Test func
     Machine getMachine();
 
+    DmAnswer getDmDetails();
+
+    void removePlugsFromMachine();
+
 }

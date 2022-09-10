@@ -45,13 +45,13 @@ public class DecryptionTask implements Runnable{
             if(isOptionalDecryption(currenDecryption)){
                 System.out.println("Found optional Decryption by " + Thread.currentThread().getName());
                 System.out.println("Decrypted message is :" + currenDecryption);
-                System.out.println("Machine configuration is " + configurator.createConfiguration(this.machine));
+                System.out.println("Machine configuration is " + configurator.getCurrentConfiguration());
             }
             move();
         }
 //        System.out.println(Thread.currentThread().getName() + " Finish tasks");
         synchronized (updateNumOfTasks){
-//            updateNumOfTasks.accept( taskSize);
+//            updateNumOfTasks.accept(taskSize);
         }
     }
 
@@ -62,6 +62,7 @@ public class DecryptionTask implements Runnable{
         for(int i  = 0; i < initialConfig.size(); ++i){
             rotors.get(i).setOffset(keyboard.getEntryMatchKey(initialConfig.get(i)));
         }
+        configurator.setCurrentConfiguration(configurator.createConfiguration(machine));
     }
 
     private void move(){

@@ -4,8 +4,9 @@ import Engine.DM.CalculationsUtils;
 import Engine.DM.DectyptionTask.DecryptionTask;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.enums.DmTaskDifficulty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.util.Pair;
 import machine.Machine;
 import machine.MachineImp;
 import machine.parts.keyboard.Keyboard;
@@ -17,6 +18,7 @@ import machine.parts.rotor.RotorImp;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class TaskProducer implements Runnable{
@@ -25,40 +27,55 @@ public class TaskProducer implements Runnable{
     private final Set<String> dictionary;
     private final String encryptedStr;
     private final int taskSize;
-    private final BlockingQueue<Runnable> tasks;
+    private final BlockingQueue<Runnable> decryptionTasks;
     private final List<Integer> rotorsId;
     private final int reflectorId;
-
-    private Consumer<Integer> updateNumOfTasks;
+    private SimpleLongProperty numOfTasks;
+    private BlockingQueue<Runnable> reportTasks;
+    private BiConsumer<String, Pair<String, String>> report;
+    private  Consumer<Integer> progressUpdate;
+    private Object pauseObj;
+    private SimpleBooleanProperty isPause;
 
 
 
     public TaskProducer(EnigmaParts machineParts, DmTaskDifficulty difficulty, Set<String> dictionary, String encryptedStr, int taskSize, BlockingQueue<Runnable> tasks
-                        , List<Integer> rotorsId, int reflectorId, Consumer<Integer> updateNumOfTasks){
+                        , List<Integer> rotorsId, int reflectorId, SimpleLongProperty numOfTasks, BlockingQueue<Runnable> reportTasks,
+                        BiConsumer<String, Pair<String, String>> report, Consumer<Integer> progressUpdate, Object pauseObj, SimpleBooleanProperty isPause){
         this.machineParts = machineParts;
         this.difficulty = difficulty;
         this.dictionary = dictionary;
         this.encryptedStr = encryptedStr;
         this.taskSize = taskSize;
-        this.tasks = tasks;
+        this.decryptionTasks = tasks;
         this.reflectorId = reflectorId;
         this.rotorsId = rotorsId;
-        this.updateNumOfTasks = updateNumOfTasks;
+        this.numOfTasks = numOfTasks;
+        this.reportTasks = reportTasks;
+        this.report = report;
+        this.progressUpdate = progressUpdate;
+        this.pauseObj = pauseObj;
+        this.isPause = isPause;
     }
 
     @Override
     public void run() {
+        System.out.println("Start producing\n");
         switch (difficulty){
             case EASY:
                 createTasksForEasyState(this.rotorsId, this.reflectorId);
                 break;
             case MEDIUM:
                 createTasksForMediumState(this.rotorsId);
+                break;
             case HARD:
                 createTasksForHardState(this.rotorsId);
+                break;
             case IMPOSSIBLE:
                 createTasksForImpossibleState();
+                break;
         }
+        System.out.println("Finish producing\n");
     }
 
     private void createTasksForEasyState(List<Integer> rotorsId, int reflectorId){
@@ -67,15 +84,21 @@ public class TaskProducer implements Runnable{
         int counter = 0;
         int nextTaskSize = 0;
         while( counter < offsetsPermutationsNum){
+            isPaused();
             nextTaskSize = offsetsPermutationsNum - counter < taskSize ? (int) (offsetsPermutationsNum - counter) : taskSize;
             try{
-                tasks.put(new DecryptionTask(
+                decryptionTasks.put(new DecryptionTask(
                         createNewMachine(rotorsId, reflectorId, offsetConfig),
                         new ArrayList<>(offsetConfig),
                         nextTaskSize,
                         this.dictionary,
                         this.encryptedStr,
-                        updateNumOfTasks
+                        numOfTasks,
+                        report,
+                        reportTasks,
+                        progressUpdate,
+                        isPause,
+                        pauseObj
                 ));
             }catch (InterruptedException e){
                 System.out.println(Thread.currentThread().getName() + " has interrupted\n");
@@ -84,12 +107,11 @@ public class TaskProducer implements Runnable{
             moveToNextConfig(offsetConfig, nextTaskSize);
             counter += nextTaskSize;
         }
-        System.out.println("Finish produce all tasks");
     }
 
     private void  createTasksForMediumState(List<Integer> rotorsId){
         for(Integer reflectorId : machineParts.getReflectors().keySet()){
-            createTasksForEasyState(rotorsId, reflectorId);
+            createTasksForEasyState(new ArrayList<>(rotorsId), reflectorId);
         }
     }
 
@@ -140,5 +162,18 @@ public class TaskProducer implements Runnable{
                 moveNext = offsetsConfig.get(j) == 0;
             }
         }
+    }
+
+    private void isPaused(){
+        while(isPause.get()){
+            synchronized (pauseObj){
+                try{
+                    this.wait(1000);
+                }catch (InterruptedException e){
+                    System.out.println("Thread interrupted");
+                }
+            }
+        }
+        notifyAll();
     }
 }

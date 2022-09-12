@@ -3,6 +3,7 @@ package GraphicPresentor.Screens.thridScreen.EncryptMessageComponent;
 import Engine.Engine;
 import Engine.engineAnswers.EncryptDecryptMessage;
 import GraphicPresentor.Screens.thridScreen.TrieDataSrtucture.Trie;
+import GraphicPresentor.Screens.thridScreen.bruteForceDashBoardComponent.DashboardController;
 import GraphicPresentor.UiAdapter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,8 +24,8 @@ public class BruteForceEncryptController {
 
     private Engine engine;
     private UiAdapter uiAdapter;
-
     private Trie availableWord;
+//    private DashboardController dashboardController;
 
     @FXML
     void initialize(){
@@ -37,6 +38,10 @@ public class BruteForceEncryptController {
             srcMessage.setText(srcMessage.getText().trim());
         });
     }
+
+//    public void setDashboardController(DashboardController controller) {
+//        this.dashboardController = controller;
+//    }
 
     public void setEngine(Engine engine) {
         this.engine = engine;
@@ -75,9 +80,11 @@ public class BruteForceEncryptController {
             if (answer.getSuccess()) {
                 processSuccessMessage.setText("Encrypted Successfully! \nPlease move to next tab to activate brute force decryption");
                 uiAdapter.bruteForceEncryptedMessageProperty().set(answer.getOut());
+                uiAdapter.isBruteForceEncryptProcessSuccessProperty().set(true);
                 uiAdapter.updateMachineDetails();
             } else {
                 processSuccessMessage.setText(answer.getError());
+                uiAdapter.isBruteForceEncryptProcessSuccessProperty().set(false);
             }
         }
     }

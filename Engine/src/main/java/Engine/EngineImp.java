@@ -9,6 +9,7 @@ import Engine.enigmaParts.EnigmaParts;
 import Engine.XMLLoader.FileReader;
 import Engine.XMLLoader.XMLLoaderImp;
 import Engine.enums.DmTaskDifficulty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Parent;
 import javafx.util.Pair;
 import machine.Machine;
@@ -19,6 +20,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -180,7 +183,7 @@ public class EngineImp implements Engine{
     public EnigmaParts getEnigmaParts(){return this.enigmaParts;}
 
     @Override
-    public long initializeDm(DmTaskDifficulty difficulty, String encrypted, int allowedAgents, int taskSize){
+    public DmInitAnswer initializeDm(DmTaskDifficulty difficulty, String encrypted, int allowedAgents, int taskSize){
         List<Integer> rotorsIds = new ArrayList<>();
         machine.getRotors().forEach(i -> rotorsIds.add(i.getId()));
 
@@ -198,8 +201,8 @@ public class EngineImp implements Engine{
         return decipherManager.initializeDm(difficulty, encrypted, allowedAgents, taskSize);
     }
     @Override
-    public void startBruteForce(){
-        this.decipherManager.startBruteForce();
+    public void startBruteForce(BiConsumer<String, Pair<String, String>> reportUpdate, Consumer<Integer> progressUpdate, SimpleBooleanProperty isPaused){
+        this.decipherManager.startBruteForce(reportUpdate , progressUpdate, isPaused);
     }
 
     private int getNumberOfMessageProcessed(){
@@ -244,21 +247,21 @@ public class EngineImp implements Engine{
         configurationImp.setStartConfiguration(newConfiguration);
     }
 
-    public static void main(String[] args) {
-        Engine engine = new EngineImp();
-        System.out.println(engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml").getMessage());
-        engine.autoConfig();
-        engine.getMachine().setPlugBord(new PlugBoardImp(new HashMap<>()));
-        engine.manualConfigPlugBoard("");
-        System.out.println(engine.getMachineDetails().getCurrentState());
-        EncryptDecryptMessage message= engine.encryptDecryptMessage("element fire",false,true);
-        System.out.println("Encryption method in decipher mode is : " + (message.getSuccess() ? "Success" : "failed"));
-        long num = engine.initializeDm(DmTaskDifficulty.EASY, message.getOut(), 3, 100);
-        System.out.println("Number of Tasks : " + num);
-        engine.startBruteForce();
-
-
-    }
+//    public static void main(String[] args) {
+//        Engine engine = new EngineImp();
+//        System.out.println(engine.loadFromFile("/Users/talkoren/tal/University/mta/java_course/ex2_files/ex2-basic (1).xml").getMessage());
+//        engine.autoConfig();
+//        engine.getMachine().setPlugBord(new PlugBoardImp(new HashMap<>()));
+//        engine.manualConfigPlugBoard("");
+//        System.out.println(engine.getMachineDetails().getCurrentState());
+//        EncryptDecryptMessage message= engine.encryptDecryptMessage("element fire",false,true);
+//        System.out.println("Encryption method in decipher mode is : " + (message.getSuccess() ? "Success" : "failed"));
+//        long num = engine.initializeDm(DmTaskDifficulty.EASY, message.getOut(), 3, 100);
+//        System.out.println("Number of Tasks : " + num);
+//        engine.startBruteForce();
+//
+//
+//    }
 }
 
 ///Users/talkoren/tal/University/mta/java_programing/enigma_proj/engima_proj_part1_testFiles/ex1-sanity-paper-enigma.xml

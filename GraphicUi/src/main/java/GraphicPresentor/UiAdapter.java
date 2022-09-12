@@ -14,6 +14,7 @@ public class UiAdapter {
     private SimpleStringProperty processedMessagesNum;
     private SimpleStringProperty reflectorsNum;
     private SimpleStringProperty bruteForceEncryptedMessage;
+    private SimpleBooleanProperty isBruteForceEncryptProcessSuccess;
 
     private Engine engine;
 
@@ -26,16 +27,13 @@ public class UiAdapter {
         usedVsPossibleRotors = new SimpleStringProperty();
         processedMessagesNum = new SimpleStringProperty();
         reflectorsNum = new SimpleStringProperty();
-        bruteForceEncryptedMessage = new SimpleStringProperty();
+        bruteForceEncryptedMessage = new SimpleStringProperty(null);
+        isBruteForceEncryptProcessSuccess = new SimpleBooleanProperty(false);
         this.engine = engine;
     }
 
     public SimpleStringProperty bruteForceEncryptedMessageProperty() {
         return bruteForceEncryptedMessage;
-    }
-
-    public String getReflectorsNum() {
-        return reflectorsNum.get();
     }
 
     public SimpleStringProperty reflectorsNumProperty() {
@@ -46,24 +44,12 @@ public class UiAdapter {
         this.reflectorsNum.set(reflectorsNum);
     }
 
-    public void setUsedVsPossibleRotors(String usedVsPossibleRotors) {
-        this.usedVsPossibleRotors.set(usedVsPossibleRotors);
-    }
-
     public void setProcessedMessagesNum(String processedMessagesNum) {
         this.processedMessagesNum.set(processedMessagesNum);
     }
 
-    public String getUsedVsPossibleRotors() {
-        return usedVsPossibleRotors.get();
-    }
-
     public SimpleStringProperty usedVsPossibleRotorsProperty() {
         return usedVsPossibleRotors;
-    }
-
-    public String getProcessedMessagesNum() {
-        return processedMessagesNum.get();
     }
 
     public SimpleStringProperty processedMessagesNumProperty() {
@@ -78,32 +64,16 @@ public class UiAdapter {
         this.isConfig.set(isConfig);
     }
 
-    public void setInitialConfiguration(String initialConfiguration) {
-        this.initialConfiguration.set(initialConfiguration);
-    }
-
     public void setCurrentConfiguration(String currentConfiguration) {
         this.currentConfiguration.set(currentConfiguration);
-    }
-
-    public boolean isIsLoaded() {
-        return isLoaded.get();
     }
 
     public SimpleBooleanProperty isLoadedProperty() {
         return isLoaded;
     }
 
-    public boolean isIsConfig() {
-        return isConfig.get();
-    }
-
     public SimpleBooleanProperty isConfigProperty() {
         return isConfig;
-    }
-
-    public String getInitialConfiguration() {
-        return initialConfiguration.get();
     }
 
     public SimpleStringProperty initialConfigurationProperty() {
@@ -118,8 +88,11 @@ public class UiAdapter {
         return currentConfiguration;
     }
 
-    public void setEngine(Engine engine) {
-        this.engine = engine;
+    public SimpleBooleanProperty isBruteForceEncryptProcessSuccessProperty() {
+        return isBruteForceEncryptProcessSuccess;
+    }
+    public void setIsBruteForceEncryptProcessSuccess(boolean isBruteForceEncryptProcessSuccess) {
+        this.isBruteForceEncryptProcessSuccess.set(isBruteForceEncryptProcessSuccess);
     }
 
     public void updateMachineDetails(){

@@ -8,13 +8,13 @@ import GraphicPresentor.Screens.firstScreen.machineDetailsComponent.MachineDetai
 import GraphicPresentor.Screens.secondScreen.encryptDecryptComponent.EncryptDecryptController;
 import GraphicPresentor.Screens.secondScreen.statisticsComponent.StatisticsController;
 import GraphicPresentor.Screens.thridScreen.EncryptMessageComponent.BruteForceEncryptController;
+import GraphicPresentor.Screens.thridScreen.bruteForceDashBoardComponent.DashboardController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.script.Bindings;
 import java.io.File;
 
 public class MainController {
@@ -29,6 +29,7 @@ public class MainController {
     @FXML private Tab currentConfigTab;
     @FXML private Tab encryptDecryptTab;
     @FXML private Tab bruteForceTab;
+    @FXML private Tab dashboardTab;
     @FXML private ScrollPane machineDetailsComponent;
     @FXML private MachineDetailController machineDetailsComponentController;
     @FXML private ScrollPane machineConfigureComponent;
@@ -41,6 +42,8 @@ public class MainController {
     @FXML private StatisticsController statisticsComponentController;
     @FXML private ScrollPane bruteEncryptComponent;
     @FXML private BruteForceEncryptController bruteEncryptComponentController;
+    @FXML private ScrollPane bruteForceDashboardComponent;
+    @FXML private DashboardController bruteForceDashboardComponentController;
 
 
 
@@ -60,6 +63,8 @@ public class MainController {
         encryptDecryptTab.disableProperty().bind(uiAdapter.isConfigProperty().not());
         bruteForceTab.disableProperty().bind(uiAdapter.isConfigProperty().not());
         currentConfigTab.disableProperty().bind(uiAdapter.isConfigProperty().not());
+        dashboardTab.disableProperty().bind(uiAdapter.isBruteForceEncryptProcessSuccessProperty().not());
+
 
         machineDetailsComponentController.setUiAdapter(uiAdapter);
         machineDetailsComponentController.bind();
@@ -76,12 +81,16 @@ public class MainController {
 
         bruteEncryptComponentController.setEngine(engine);
         bruteEncryptComponentController.setUiAdapter(uiAdapter);
+//        bruteEncryptComponentController.setDashboardController(bruteForceDashboardComponentController);
         uiAdapter.isConfigProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue){
                 bruteEncryptComponentController.getDecipherDetails();
             }
         });
 
+
+        bruteForceDashboardComponentController.setUiAdapter(uiAdapter);
+        bruteForceDashboardComponentController.setEngine(engine);
     }
 
     @FXML void changeSkin(ActionEvent event) {
@@ -98,7 +107,7 @@ public class MainController {
         }
         String absolutePath = selectedFile.getAbsolutePath();
         InputOperationAnswer answer = this.engine.loadFromFile(absolutePath);
-        uiAdapter.isLoadedProperty().set(answer.isSuccess());
+        uiAdapter.setIsLoaded(answer.isSuccess());
         loadFileAnswerLabel.setText(answer.getMessage());
         if(answer.isSuccess()){
             uiAdapter.isConfigProperty().set(false);

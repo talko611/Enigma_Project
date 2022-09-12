@@ -1,14 +1,21 @@
 package Engine.DM.DectyptionTask;
 
 
+import Engine.DM.ReportTask.ReportTask;
 import Engine.configuration.ConfigurationImp;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.util.Pair;
 import machine.Machine;
 import machine.parts.keyboard.Keyboard;
 import machine.parts.rotor.Rotor;
+import org.checkerframework.checker.units.qual.C;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class DecryptionTask implements Runnable{
@@ -18,40 +25,56 @@ public class DecryptionTask implements Runnable{
     private final Set<String> dictionary;
     private final String encryptedStr;
     private final ConfigurationImp configurator;
+    private final SimpleLongProperty numOfTasks;
+    private final  BiConsumer<String, Pair<String, String>> updateResult;
+    private final BlockingQueue<Runnable> reportTasks;
+    private Consumer<Integer> progressUpdate;
+    private SimpleBooleanProperty isPaused;
+    private Object pauseObj;
 
-    private final Consumer<Integer> updateNumOfTasks;
 
 
-
-
-    public DecryptionTask(Machine machine,List<Integer> initialConfig, int taskSize, Set<String> dictionary, String encryptedStr, Consumer<Integer> updateNumOfTasks) {
+    public DecryptionTask(Machine machine, List<Integer> initialConfig, int taskSize, Set<String> dictionary, String encryptedStr, SimpleLongProperty numOfTasks,
+                          BiConsumer<String, Pair<String, String>> updateResult, BlockingQueue<Runnable> reportTasks, Consumer<Integer> progressUpdate, SimpleBooleanProperty isPause,
+                          Object pause) {
         this.machine = machine;
         this.taskSize = taskSize;
         this.dictionary = dictionary;
         this.encryptedStr = encryptedStr;
         this.initialConfig = initialConfig;
         this.configurator = new ConfigurationImp();
-        this.updateNumOfTasks = updateNumOfTasks;
+        this.numOfTasks = numOfTasks;
+        this.updateResult = updateResult;
+        this.reportTasks = reportTasks;
+        this.progressUpdate = progressUpdate;
+        this.isPaused = isPause;
+        this.pauseObj = pause;
     }
 
     @Override
     public void run() {
-//        System.out.println(Thread.currentThread().getName() + " Starting task");
         String currenDecryption;
-
         for(int i = 0; i < taskSize; ++i){
+            isPaused();
             setOffset();
             currenDecryption = decrypt();
             if(isOptionalDecryption(currenDecryption)){
-                System.out.println("Found optional Decryption by " + Thread.currentThread().getName());
-                System.out.println("Decrypted message is :" + currenDecryption);
-                System.out.println("Machine configuration is " + configurator.getCurrentConfiguration());
+                try {
+                    System.out.println("found by " + Thread.currentThread().getName());
+                    System.out.println("Configuration" + configurator.createConfiguration(machine));
+                    System.out.println("Decryption: "  + currenDecryption + "\n");
+                    machine.reset();
+                    reportTasks.put(new ReportTask(currenDecryption, configurator.createConfiguration(machine),Thread.currentThread().getName(), updateResult));
+                    System.out.println(Thread.currentThread().getName() + " enter result to answer queue\n");
+                } catch (InterruptedException e) {
+                    System.out.println("Something went wrong in " + Thread.currentThread().getName());
+                }
             }
             move();
         }
-//        System.out.println(Thread.currentThread().getName() + " Finish tasks");
-        synchronized (updateNumOfTasks){
-//            updateNumOfTasks.accept(taskSize);
+        synchronized (numOfTasks){
+            numOfTasks.set(numOfTasks.get() + 1);
+            Platform.runLater(()->progressUpdate.accept(numOfTasks.intValue()));
         }
     }
 
@@ -90,5 +113,18 @@ public class DecryptionTask implements Runnable{
             }
         }
         return true;
+    }
+
+    private void isPaused(){
+        while(isPaused.get()){
+            synchronized (pauseObj){
+                try{
+                    this.wait(1000);
+                }catch (InterruptedException e){
+                    System.out.println("Thread interrupted");
+                }
+            }
+        }
+        notifyAll();
     }
 }

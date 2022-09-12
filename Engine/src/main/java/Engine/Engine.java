@@ -3,7 +3,12 @@ package Engine;
 import Engine.engineAnswers.*;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.enums.DmTaskDifficulty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.util.Pair;
 import machine.Machine;
+
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public interface Engine {
     InputOperationAnswer loadFromFile(String filePath);
@@ -42,8 +47,8 @@ public interface Engine {
     SizeOfElementAnswer getNumOfReflectors();
     EnigmaParts getEnigmaParts();
 
-    long initializeDm(DmTaskDifficulty difficulty, String encrypted, int allowedAgents, int taskSize);
-    void startBruteForce();
+    DmInitAnswer initializeDm(DmTaskDifficulty difficulty, String encrypted, int allowedAgents, int taskSize);
+    void startBruteForce(BiConsumer<String, Pair<String, String>> reportUpdate, Consumer<Integer> progressUpdate, SimpleBooleanProperty isPaused);
 
     //Test func
     Machine getMachine();

@@ -12,90 +12,54 @@ public class ResultReporter implements Runnable {
     private ThreadPoolExecutor agents;
     private BlockingQueue<Runnable> decryptionTasks;
     private SimpleLongProperty taskNum;
-    private Object pause;
     private SimpleBooleanProperty isPause;
 
-    public ResultReporter(BlockingQueue<Runnable> answers, ThreadPoolExecutor agents, BlockingQueue<Runnable> decryptionTasks, SimpleLongProperty taskNum,
-                          Object pause, SimpleBooleanProperty isPause){
+    public ResultReporter(BlockingQueue<Runnable> answers, ThreadPoolExecutor agents, BlockingQueue<Runnable> decryptionTasks, SimpleLongProperty taskNum, SimpleBooleanProperty isPause){
         this.agents = agents;
         this.answers = answers;
         this.decryptionTasks = decryptionTasks;
         this.taskNum = taskNum;
-        this.pause = pause;
         this.isPause = isPause;
     }
 
     @Override
     public void run() {
-        int counter = 0;
+//        int counter = 0;
         //To give some time for the producer to work
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
-            System.out.println("Reporter thread is down\n");
+            System.out.println(Thread.currentThread().getName() + " has interrupted with exception(After first sleep)");
+            return;
         }
-        System.out.println("Reporter Start listening to results\n");
-        while(!decryptionTasks.isEmpty() && taskNum.get() != 0){
+        System.out.println(Thread.currentThread().getName() + " start listening to results");
+        while(!answers.isEmpty() || agents.getActiveCount() != 0 || !decryptionTasks.isEmpty() ){
             isPaused();
             if(!answers.isEmpty()){
-                if(counter == 0){
-                    System.out.println("Reporter Enter first loop\n");
-                    counter =1;
-                }
                 try {
                     Runnable update = answers.take();
                     update.run();
                 } catch (InterruptedException e) {
-                    System.out.println("Reporter Failed to update Ui\n");
-                    System.out.println(e.getStackTrace());
+                    System.out.println(Thread.currentThread().getName() + " has interrupted with exception(tried to pull new reporting task)");
+                    return;
                 }
             }
-        }
-        while (agents.getActiveCount() != 0){
-            isPaused();
-            if(counter <= 1){
-                System.out.println("Reporter Enter second loop\n");
-                counter = 2;
-            }
-            if(!answers.isEmpty()){
-                try{
-                    Runnable update = answers.take();
-                    update.run();
-                }catch (InterruptedException e){
-                    System.out.println("Reporter Failed to update Ui\n");
-                    System.out.println(e.getStackTrace());
-                }
+            if(Thread.interrupted()){
+                System.out.println(Thread.currentThread().getName() + " has interrupted without exception(exiting...)");
+                return;
             }
         }
         agents.shutdown();
-        while (!answers.isEmpty()){
-            isPaused();
-            if(counter<= 2){
-                System.out.println("Reporter Enter second loop\n");
-                counter = 3;
-            }
-
-            try{
-                Runnable update = answers.take();
-                update.run();
-            }catch (InterruptedException e){
-                System.out.println("Reporter Failed to update Ui\n");
-                System.out.println(e.getStackTrace());
-            }
-        }
-        System.out.println("Reporter Finish listening to results\n");
+        System.out.println(Thread.currentThread().getName() + " finish work");
     }
 
-    private void isPaused(){
+    private synchronized void isPaused(){
         while (isPause.get()){
-            synchronized (pause){
-                try {
-                    this.wait(1000);
-                } catch (InterruptedException e) {
-                    System.out.println("Thread interrupted");
-                }
+            try {
+                this.wait(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(Thread.currentThread().getName() + " got interrupt when was paused");
             }
         }
-        notifyAll();
     }
 }

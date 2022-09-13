@@ -29,14 +29,11 @@ public class DecryptionTask implements Runnable{
     private final  BiConsumer<String, Pair<String, String>> updateResult;
     private final BlockingQueue<Runnable> reportTasks;
     private Consumer<Integer> progressUpdate;
-    private SimpleBooleanProperty isPaused;
-    private Object pauseObj;
 
 
 
     public DecryptionTask(Machine machine, List<Integer> initialConfig, int taskSize, Set<String> dictionary, String encryptedStr, SimpleLongProperty numOfTasks,
-                          BiConsumer<String, Pair<String, String>> updateResult, BlockingQueue<Runnable> reportTasks, Consumer<Integer> progressUpdate, SimpleBooleanProperty isPause,
-                          Object pause) {
+                          BiConsumer<String, Pair<String, String>> updateResult, BlockingQueue<Runnable> reportTasks, Consumer<Integer> progressUpdate) {
         this.machine = machine;
         this.taskSize = taskSize;
         this.dictionary = dictionary;
@@ -47,30 +44,32 @@ public class DecryptionTask implements Runnable{
         this.updateResult = updateResult;
         this.reportTasks = reportTasks;
         this.progressUpdate = progressUpdate;
-        this.isPaused = isPause;
-        this.pauseObj = pause;
     }
 
     @Override
     public void run() {
         String currenDecryption;
         for(int i = 0; i < taskSize; ++i){
-            isPaused();
             setOffset();
             currenDecryption = decrypt();
             if(isOptionalDecryption(currenDecryption)){
                 try {
-                    System.out.println("found by " + Thread.currentThread().getName());
-                    System.out.println("Configuration" + configurator.createConfiguration(machine));
-                    System.out.println("Decryption: "  + currenDecryption + "\n");
+                    System.out.println(Thread.currentThread().getName() + " has found a candidate");
+                    System.out.println("\tConfiguration: " + configurator.createConfiguration(machine));
+                    System.out.println("\tDecryption: "  + currenDecryption + "\n");
                     machine.reset();
                     reportTasks.put(new ReportTask(currenDecryption, configurator.createConfiguration(machine),Thread.currentThread().getName(), updateResult));
-                    System.out.println(Thread.currentThread().getName() + " enter result to answer queue\n");
+                    System.out.println(Thread.currentThread().getName() + " enter result to answer queue");
                 } catch (InterruptedException e) {
-                    System.out.println("Something went wrong in " + Thread.currentThread().getName());
+                    System.out.println(Thread.currentThread().getName() + " has interrupted with exception");
+                    return;
                 }
             }
             move();
+            if(Thread.interrupted()){
+                System.out.println(Thread.currentThread().getName() + " has interrupted without exception");
+                return;
+            }
         }
         synchronized (numOfTasks){
             numOfTasks.set(numOfTasks.get() + 1);
@@ -113,18 +112,5 @@ public class DecryptionTask implements Runnable{
             }
         }
         return true;
-    }
-
-    private void isPaused(){
-        while(isPaused.get()){
-            synchronized (pauseObj){
-                try{
-                    this.wait(1000);
-                }catch (InterruptedException e){
-                    System.out.println("Thread interrupted");
-                }
-            }
-        }
-        notifyAll();
     }
 }

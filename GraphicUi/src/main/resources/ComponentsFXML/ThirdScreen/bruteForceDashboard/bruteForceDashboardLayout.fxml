@@ -69,7 +69,7 @@
             </VBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Label text="Total Tasks: ">
+                  <Label text="Tasks: ">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>

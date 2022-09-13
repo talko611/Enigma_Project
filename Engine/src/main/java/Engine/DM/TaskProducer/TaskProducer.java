@@ -34,14 +34,13 @@ public class TaskProducer implements Runnable{
     private BlockingQueue<Runnable> reportTasks;
     private BiConsumer<String, Pair<String, String>> report;
     private  Consumer<Integer> progressUpdate;
-    private Object pauseObj;
     private SimpleBooleanProperty isPause;
 
 
 
     public TaskProducer(EnigmaParts machineParts, DmTaskDifficulty difficulty, Set<String> dictionary, String encryptedStr, int taskSize, BlockingQueue<Runnable> tasks
                         , List<Integer> rotorsId, int reflectorId, SimpleLongProperty numOfTasks, BlockingQueue<Runnable> reportTasks,
-                        BiConsumer<String, Pair<String, String>> report, Consumer<Integer> progressUpdate, Object pauseObj, SimpleBooleanProperty isPause){
+                        BiConsumer<String, Pair<String, String>> report, Consumer<Integer> progressUpdate, SimpleBooleanProperty isPause){
         this.machineParts = machineParts;
         this.difficulty = difficulty;
         this.dictionary = dictionary;
@@ -54,13 +53,12 @@ public class TaskProducer implements Runnable{
         this.reportTasks = reportTasks;
         this.report = report;
         this.progressUpdate = progressUpdate;
-        this.pauseObj = pauseObj;
         this.isPause = isPause;
     }
 
     @Override
     public void run() {
-        System.out.println("Start producing\n");
+        System.out.println(Thread.currentThread().getName() + " start producing");
         switch (difficulty){
             case EASY:
                 createTasksForEasyState(this.rotorsId, this.reflectorId);
@@ -75,7 +73,7 @@ public class TaskProducer implements Runnable{
                 createTasksForImpossibleState();
                 break;
         }
-        System.out.println("Finish producing\n");
+        System.out.println(Thread.currentThread().getName() + " finish producing");
     }
 
     private void createTasksForEasyState(List<Integer> rotorsId, int reflectorId){
@@ -96,13 +94,16 @@ public class TaskProducer implements Runnable{
                         numOfTasks,
                         report,
                         reportTasks,
-                        progressUpdate,
-                        isPause,
-                        pauseObj
+                        progressUpdate
                 ));
+                if(Thread.interrupted()){
+                    System.out.println(Thread.currentThread().getName() + " has interrupted without exception\n");
+                    return;
+                }
             }catch (InterruptedException e){
-                System.out.println(Thread.currentThread().getName() + " has interrupted\n");
+                System.out.println(Thread.currentThread().getName() + " has interrupted by exception thrown\n");
                 System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+                return;
             }
             moveToNextConfig(offsetConfig, nextTaskSize);
             counter += nextTaskSize;
@@ -164,16 +165,13 @@ public class TaskProducer implements Runnable{
         }
     }
 
-    private void isPaused(){
-        while(isPause.get()){
-            synchronized (pauseObj){
-                try{
-                    this.wait(1000);
-                }catch (InterruptedException e){
-                    System.out.println("Thread interrupted");
-                }
+    private synchronized void isPaused(){
+        while (isPause.get()){
+            try {
+                this.wait(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(Thread.currentThread().getName() + " got interrupted while was paused");
             }
         }
-        notifyAll();
     }
 }

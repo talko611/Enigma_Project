@@ -246,6 +246,20 @@ public class EngineImp implements Engine{
         configurationImp.setCurrentConfiguration(newConfiguration);
         configurationImp.setStartConfiguration(newConfiguration);
     }
+    @Override
+    public void abortBruteForce(){
+        this.decipherManager.stopBruteForce();
+    }
+
+    @Override
+    public void pauseBruteForce() {
+        this.decipherManager.pauseWork();
+    }
+
+    @Override
+    public void resumeBruteForce() {
+        this.decipherManager.resumeWork();
+    }
 
 //    public static void main(String[] args) {
 //        Engine engine = new EngineImp();

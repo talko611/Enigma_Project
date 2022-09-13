@@ -42,6 +42,7 @@ public class DashboardController {
     private ObservableList<UiBruteForceResults> data;
     private long totalTasks;
     private SimpleBooleanProperty isPaused;
+    private Thread timer;
 
     @FXML
     void initialize(){
@@ -84,12 +85,14 @@ public class DashboardController {
 
     @FXML
     void pauseButtonClicked(ActionEvent event) {
-        this.isPaused.set(true);
+        isPaused.set(true);
+        engine.pauseBruteForce();
     }
 
     @FXML
     void resumeButtonClicked(ActionEvent event) {
-        this.isPaused.set(false);
+        isPaused.set(false);
+        engine.resumeBruteForce();
     }
 
     @FXML
@@ -99,17 +102,20 @@ public class DashboardController {
             System.out.println("JAT entering result to table\n");
         };
         Consumer<Integer> progressUpdate = (taskCompleted)->{
-            double progress = (double) Math.round(taskCompleted/(double)totalTasks * 10) / 10;
-          progressBar.setProgress(progress);
-          progressBarLb.setText(String.valueOf(progress * 100) + "%");
+            double progress = (double) Math.round(taskCompleted/(double)totalTasks * 1000) / 1000;
+            progressBar.setProgress(progress);
+            numOfTasksLb.setText(String.valueOf(String.format("%.2f",(double) totalTasks - taskCompleted)));
+            progressBarLb.setText(progress * 100 + "%");
         };
-        new Thread(new TimerTask(progressBar.progressProperty(), timeLb::setText)).start();
+        timer = new Thread(new TimerTask(progressBar.progressProperty(), timeLb::setText, isPaused),"Timer");
+        timer.start();
         engine.startBruteForce(tableUpdate , progressUpdate ,isPaused);
     }
 
     @FXML
     void stopButtonClicked(ActionEvent event) {
-
+        engine.abortBruteForce();
+        timer.interrupt();
     }
 
     @FXML

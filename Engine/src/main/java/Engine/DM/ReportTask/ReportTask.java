@@ -23,9 +23,9 @@ public class ReportTask implements Runnable {
     @Override
     public void run() {
         System.out.println("Report task reporting to Ui");
-        System.out.println("Decryption " + decryption);
-        System.out.println("Agent " + agentNum);
-        System.out.println("Configuration " + configuration +"\n");
+        System.out.println("\tDecryption " + decryption);
+        System.out.println("\tAgent " + agentNum);
+        System.out.println("\tConfiguration " + configuration);
         Platform.runLater(()->update.accept(decryption, new Pair<>(configuration, agentNum)));
     }
 }

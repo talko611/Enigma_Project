@@ -1,5 +1,6 @@
 package Engine.DM;
 
+import Engine.DM.MyThreadPool.MyThreadPool;
 import Engine.DM.ReportTask.ReportTask;
 import Engine.DM.ResultReporter.ResultReporter;
 import Engine.DM.TaskProducer.TaskProducer;
@@ -30,12 +31,15 @@ public class DecipherManager {
     private DmTaskDifficulty difficulty;
     private Long  totalTasks;
     private int taskSize;
-    private ThreadPoolExecutor agents;
+    private MyThreadPool agents;
     private BlockingQueue<Runnable> tasks;
     private BlockingQueue<Runnable> answers;
     private String messageToDecrypt;
     private SimpleLongProperty numberOfTasks;
     private Object pauseObj;
+
+    private Thread tasksProducer;
+    private Thread resultReporter;
 
 
 
@@ -54,7 +58,7 @@ public class DecipherManager {
         this.taskSize = taskSize;
         this.difficulty = taskDifficulty;
         this.tasks = new ArrayBlockingQueue<>(1000);
-        this.agents= new ThreadPoolExecutor(numberOfAgentsAllowed, numberOfAgentsAllowed, 0L, TimeUnit.MILLISECONDS, this.tasks, new ThreadFactory() {
+        this.agents= new MyThreadPool(numberOfAgentsAllowed, numberOfAgentsAllowed, 0L, TimeUnit.MILLISECONDS, this.tasks, new ThreadFactory() {
             private int threadCounter = 1;
             @Override
             public Thread newThread(@NotNull Runnable r) {
@@ -86,11 +90,27 @@ public class DecipherManager {
                 System.out.println("Number of tasks negative");
             }
         });
-        new Thread(new TaskProducer(machineParts, difficulty, dictionary, messageToDecrypt, taskSize,
-                                    tasks, rotorsId, reflectorId, numberOfTasks, answers, reportUpdate, progressUpdate, pauseObj, isPause)).start();
-        new Thread(new ResultReporter(answers, agents, tasks, numberOfTasks, pauseObj, isPause)).start();
+
+        tasksProducer = new Thread(new TaskProducer(machineParts, difficulty, dictionary, messageToDecrypt, taskSize,
+                                    tasks, rotorsId, reflectorId, numberOfTasks, answers, reportUpdate, progressUpdate, isPause),"Task Producer");
+
+        tasksProducer.start();
+        resultReporter = new Thread(new ResultReporter(answers, agents, tasks, numberOfTasks, isPause), "Result Reporter");
+        resultReporter.start();
     }
 
+    public void stopBruteForce(){
+        agents.shutdownNow();
+        tasksProducer.interrupt();
+        resultReporter.interrupt();
+    }
+
+    public void pauseWork(){
+        agents.pause();
+    }
+    public void resumeWork(){
+        agents.resume();
+    }
 
     public long calculateNumberOfTasks(){
         long numberOfTasks = 0;

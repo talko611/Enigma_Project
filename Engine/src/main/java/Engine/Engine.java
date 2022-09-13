@@ -57,4 +57,8 @@ public interface Engine {
 
     void removePlugsFromMachine();
 
+    void abortBruteForce();
+    void pauseBruteForce();
+    void resumeBruteForce();
+
 }

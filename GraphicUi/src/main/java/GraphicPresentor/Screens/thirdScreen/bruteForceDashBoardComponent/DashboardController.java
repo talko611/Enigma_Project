@@ -1,10 +1,9 @@
-package GraphicPresentor.Screens.thridScreen.bruteForceDashBoardComponent;
+package GraphicPresentor.Screens.thirdScreen.bruteForceDashBoardComponent;
 
 import Engine.Engine;
 import Engine.engineAnswers.DmAnswer;
 import Engine.engineAnswers.DmInitAnswer;
 import Engine.enums.DmTaskDifficulty;
-import GraphicPresentor.Screens.secondScreen.statisticsComponent.StatisticsController;
 import GraphicPresentor.UiAdapter;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -29,20 +28,31 @@ public class DashboardController {
     @FXML private Label timeLb;
     @FXML private ProgressBar progressBar;
     @FXML private Label progressBarLb;
-    @FXML private Label isSetLb;
+    @FXML private Label userLabel;
     @FXML  private TableView<UiBruteForceResults> candidates;
     @FXML private TableColumn<?, ?> decryptionCol;
     @FXML private TableColumn<?, ?> configurationCol;
     @FXML private TableColumn<?, ?> foundByCol;
+    @FXML private Button startBt;
+    @FXML private Button pauseBt;
+    @FXML private Button resumeBt;
+    @FXML private Button stopBt;
+    @FXML private Button setBt;
+    @FXML private Button restBt;
 
 
-    boolean isSet;
+
+//    boolean isSet;
     private UiAdapter uiAdapter;
     private Engine engine;
     private ObservableList<UiBruteForceResults> data;
     private long totalTasks;
     private SimpleBooleanProperty isPaused;
     private Thread timer;
+    private SimpleBooleanProperty isSet;
+    private SimpleBooleanProperty isStopped;
+    private SimpleBooleanProperty isStarted;
+
 
     @FXML
     void initialize(){
@@ -52,7 +62,19 @@ public class DashboardController {
         configurationCol.setCellValueFactory(new PropertyValueFactory<>("configuration"));
         foundByCol.setCellValueFactory(new PropertyValueFactory<>("foundBy"));
         isPaused = new SimpleBooleanProperty(false);
-
+        isStopped = new SimpleBooleanProperty(false);
+        isSet = new SimpleBooleanProperty(false);
+        isStarted = new SimpleBooleanProperty(false);
+        setBt.disableProperty().bind(isSet);
+        startBt.disableProperty().bind(isSet.not().or(isStarted).or(isStopped).or(numOfTasksLb.textProperty().isEqualTo("0")));
+        pauseBt.disableProperty().bind(isSet.not().or(isPaused).or(isStopped).or(numOfTasksLb.textProperty().isEqualTo("0")));
+        resumeBt.disableProperty().bind(isSet.not().or(isPaused.not()).or(isStopped).or(numOfTasksLb.textProperty().isEqualTo("0")));
+        stopBt.disableProperty().bind(isStarted.not().or(isStopped).or(numOfTasksLb.textProperty().isEqualTo("0")));
+        numOfTasksLb.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.equals("0")){
+                restBt.disableProperty().set(false);
+            }
+        });
     }
 
     public void setUiAdapter(UiAdapter uiAdapter){
@@ -74,29 +96,39 @@ public class DashboardController {
         numOfAgentsSlider.setMin(1);
         numOfAgentsSlider.setValue(1);
         difficultyCb.setAccessibleText("Difficulty Level");
-        isSetLb.setText("");
+        userLabel.setText("");
         numOfTasksLb.setText("");
+        taskSizeTb.setText("");
         timeLb.setText("");
         progressBarLb.setText("");
-        isSet = false;
+        progressBar.setProgress(0);
+        isSet.set(false);
+        isStopped.set(false);
+        isPaused.set(false);
+        isStarted.set(false);
         data = FXCollections.observableArrayList();
         candidates.setItems(data);
+        restBt.disableProperty().set(true);
     }
 
     @FXML
     void pauseButtonClicked(ActionEvent event) {
+        userLabel.setText("Process paused");
         isPaused.set(true);
         engine.pauseBruteForce();
     }
 
     @FXML
     void resumeButtonClicked(ActionEvent event) {
+        userLabel.setText("Process running");
         isPaused.set(false);
         engine.resumeBruteForce();
     }
 
     @FXML
     void startButtonClicked(ActionEvent event) {
+        isStarted.set(true);
+        userLabel.setText("Process running");
         BiConsumer<String, Pair<String,String>> tableUpdate = (str, pair)->{
             data.add(new UiBruteForceResults(str, pair.getKey(), pair.getValue()));
             System.out.println("JAT entering result to table\n");
@@ -104,8 +136,8 @@ public class DashboardController {
         Consumer<Integer> progressUpdate = (taskCompleted)->{
             double progress = (double) Math.round(taskCompleted/(double)totalTasks * 1000) / 1000;
             progressBar.setProgress(progress);
-            numOfTasksLb.setText(String.valueOf(String.format("%.2f",(double) totalTasks - taskCompleted)));
-            progressBarLb.setText(progress * 100 + "%");
+            numOfTasksLb.setText(String.valueOf(totalTasks - taskCompleted));
+            progressBarLb.setText(String.format("%.2f",progress * 100) + "%");
         };
         timer = new Thread(new TimerTask(progressBar.progressProperty(), timeLb::setText, isPaused),"Timer");
         timer.start();
@@ -116,29 +148,36 @@ public class DashboardController {
     void stopButtonClicked(ActionEvent event) {
         engine.abortBruteForce();
         timer.interrupt();
+        userLabel.setText("Process ended\nClick reset to set process on same message or encrypt different message on the previous tab ");
+        isStopped.set(true);
+        restBt.disableProperty().set(false);
     }
 
     @FXML
     void setButtonClicked(ActionEvent event) {
         try {
             if(difficultyCb.getValue() == null){
-                isSetLb.setText("Please choose difficulty level");
+                userLabel.setText("Please choose difficulty level");
                 return;
             }
             DmInitAnswer answer = engine.initializeDm(difficultyCb.getValue(),
                     uiAdapter.bruteForceEncryptedMessageProperty().get(),
                     (int) Math.floor(numOfAgentsSlider.getValue()),
                     Integer.parseInt(taskSizeTb.getText()));
-            isSetLb.setText(answer.getMessage());
-            isSet = answer.getSuccess();
-            timeLb.setText("0 S");
+            userLabel.setText(answer.getMessage());
+            isSet.set(answer.getSuccess());
+            timeLb.setText("0 Sec");
             progressBarLb.setText("0%");
             numOfTasksLb.setText(String.valueOf(answer.getNumOfTask()));
             totalTasks = answer.getNumOfTask();
         } catch (NumberFormatException e) {
-            isSetLb.setText("please enter only whole number in task size box with max of 10 digits max");
+            userLabel.setText("please enter only whole number in task size box with max of 10 digits max");
         }
 
+    }
+    @FXML
+    void resetButtonClicked(ActionEvent event){
+        init();
     }
 
     public static class UiBruteForceResults{

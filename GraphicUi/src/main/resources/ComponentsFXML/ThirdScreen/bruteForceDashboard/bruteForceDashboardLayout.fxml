@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.Screens.thridScreen.bruteForceDashBoardComponent.DashboardController">
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.Screens.thirdScreen.bruteForceDashBoardComponent.DashboardController">
    <content>
       <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
@@ -61,10 +61,10 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </TextField>
-                        <Button mnemonicParsing="false" onAction="#setButtonClicked" prefHeight="25.0" prefWidth="50.0" text="Set" />
+                        <Button fx:id="setBt" mnemonicParsing="false" onAction="#setButtonClicked" prefHeight="25.0" prefWidth="50.0" text="Set" />
                      </children>
                   </HBox>
-                  <Label fx:id="isSetLb" />
+                  <Label fx:id="userLabel" />
                </children>
             </VBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
@@ -99,26 +99,27 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#startButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Start">
+                  <Button fx:id="startBt" mnemonicParsing="false" onAction="#startButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Start">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#pauseButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Pause">
+                  <Button fx:id="pauseBt" mnemonicParsing="false" onAction="#pauseButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Pause">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#resumeButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Resume">
+                  <Button fx:id="resumeBt" mnemonicParsing="false" onAction="#resumeButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Resume">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#stopButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Stop">
+                  <Button fx:id="stopBt" mnemonicParsing="false" onAction="#stopButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Stop">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
                   </Button>
+                  <Button fx:id="restBt" disable="true" mnemonicParsing="false" onAction="#resetButtonClicked" prefHeight="25.0" prefWidth="70.0" text="Rest" />
                </children>
             </HBox>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">

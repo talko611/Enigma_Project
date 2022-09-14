@@ -1,6 +1,5 @@
-package GraphicPresentor.Screens.thridScreen.bruteForceDashBoardComponent;
+package GraphicPresentor.Screens.thirdScreen.bruteForceDashBoardComponent;
 
-import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;

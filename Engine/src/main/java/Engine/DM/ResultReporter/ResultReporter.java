@@ -1,5 +1,6 @@
 package Engine.DM.ResultReporter;
 
+import Engine.DM.MyThreadPool.MyThreadPool;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 
@@ -9,57 +10,46 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ResultReporter implements Runnable {
 
     private BlockingQueue<Runnable> answers;
-    private ThreadPoolExecutor agents;
-    private BlockingQueue<Runnable> decryptionTasks;
-    private SimpleLongProperty taskNum;
+    private SimpleLongProperty finishedTasks;
     private SimpleBooleanProperty isPause;
+    private long totalWork;
+    private MyThreadPool agents;
 
-    public ResultReporter(BlockingQueue<Runnable> answers, ThreadPoolExecutor agents, BlockingQueue<Runnable> decryptionTasks, SimpleLongProperty taskNum, SimpleBooleanProperty isPause){
-        this.agents = agents;
+    public ResultReporter(BlockingQueue<Runnable> answers, SimpleLongProperty finishedTasks, SimpleBooleanProperty isPause, long totalWork, MyThreadPool agents){
         this.answers = answers;
-        this.decryptionTasks = decryptionTasks;
-        this.taskNum = taskNum;
+        this.finishedTasks = finishedTasks;
         this.isPause = isPause;
+        this.totalWork = totalWork;
+        this.agents = agents;
     }
 
     @Override
     public void run() {
-//        int counter = 0;
-        //To give some time for the producer to work
+        String errorMessage;
         try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            System.out.println(Thread.currentThread().getName() + " has interrupted with exception(After first sleep)");
-            return;
-        }
-        System.out.println(Thread.currentThread().getName() + " start listening to results");
-        while(!answers.isEmpty() || agents.getActiveCount() != 0 || !decryptionTasks.isEmpty() ){
-            isPaused();
-            if(!answers.isEmpty()){
-                try {
+//            Thread.sleep(3000); //To give some time for the producer to work
+            System.out.println(Thread.currentThread().getName() + " start listening to results");
+            while(!answers.isEmpty() || totalWork != finishedTasks.get()){
+                if(!answers.isEmpty()){
                     Runnable update = answers.take();
                     update.run();
-                } catch (InterruptedException e) {
-                    System.out.println(Thread.currentThread().getName() + " has interrupted with exception(tried to pull new reporting task)");
+                }
+                if(Thread.interrupted()){
+                    agents.shutdown();
+                    System.out.println(Thread.currentThread().getName() + " has interrupted without exception(exiting...)");
                     return;
                 }
             }
-            if(Thread.interrupted()){
-                System.out.println(Thread.currentThread().getName() + " has interrupted without exception(exiting...)");
-                return;
-            }
+            agents.shutdown();
+            System.out.println(Thread.currentThread().getName() + " finish work");
+        } catch (InterruptedException e) {
+            System.out.println(Thread.currentThread().getName() + " has interrupted with exception thrown");
         }
-        agents.shutdown();
-        System.out.println(Thread.currentThread().getName() + " finish work");
     }
 
-    private synchronized void isPaused(){
+    private synchronized void isPaused() throws InterruptedException {
         while (isPause.get()){
-            try {
-                this.wait(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(Thread.currentThread().getName() + " got interrupt when was paused");
-            }
+            this.wait(2000);
         }
     }
 }

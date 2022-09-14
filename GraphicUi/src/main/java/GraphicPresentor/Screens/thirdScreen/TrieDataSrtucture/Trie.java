@@ -1,6 +1,4 @@
-package GraphicPresentor.Screens.thridScreen.TrieDataSrtucture;
-
-import javafx.util.Pair;
+package GraphicPresentor.Screens.thirdScreen.TrieDataSrtucture;
 
 import java.util.*;
 

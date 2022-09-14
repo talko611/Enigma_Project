@@ -59,24 +59,29 @@ public class TaskProducer implements Runnable{
     @Override
     public void run() {
         System.out.println(Thread.currentThread().getName() + " start producing");
-        switch (difficulty){
-            case EASY:
-                createTasksForEasyState(this.rotorsId, this.reflectorId);
-                break;
-            case MEDIUM:
-                createTasksForMediumState(this.rotorsId);
-                break;
-            case HARD:
-                createTasksForHardState(this.rotorsId);
-                break;
-            case IMPOSSIBLE:
-                createTasksForImpossibleState();
-                break;
+        try {
+            switch (difficulty){
+                case EASY:
+                    createTasksForEasyState(this.rotorsId, this.reflectorId);
+                    break;
+                case MEDIUM:
+                    createTasksForMediumState(this.rotorsId);
+                    break;
+                case HARD:
+                    createTasksForHardState(this.rotorsId);
+                    break;
+                case IMPOSSIBLE:
+                    createTasksForImpossibleState();
+                    break;
+            }
+        }catch (InterruptedException e){
+            System.out.println(Thread.currentThread().getName() + " has interrupted by exception(case by interrupted while was pause)");
+            return;
         }
         System.out.println(Thread.currentThread().getName() + " finish producing");
     }
 
-    private void createTasksForEasyState(List<Integer> rotorsId, int reflectorId){
+    private void createTasksForEasyState(List<Integer> rotorsId, int reflectorId) throws InterruptedException {
         long offsetsPermutationsNum = (long) Math.pow(machineParts.getKeyboard().getABC().size(), rotorsId.size());
         List<Integer> offsetConfig = new ArrayList<>(Collections.nCopies(rotorsId.size(),0));
         int counter = 0;
@@ -84,25 +89,19 @@ public class TaskProducer implements Runnable{
         while( counter < offsetsPermutationsNum){
             isPaused();
             nextTaskSize = offsetsPermutationsNum - counter < taskSize ? (int) (offsetsPermutationsNum - counter) : taskSize;
-            try{
-                decryptionTasks.put(new DecryptionTask(
-                        createNewMachine(rotorsId, reflectorId, offsetConfig),
-                        new ArrayList<>(offsetConfig),
-                        nextTaskSize,
-                        this.dictionary,
-                        this.encryptedStr,
-                        numOfTasks,
-                        report,
-                        reportTasks,
-                        progressUpdate
+            decryptionTasks.put(new DecryptionTask(
+                    createNewMachine(rotorsId, reflectorId, offsetConfig),
+                    new ArrayList<>(offsetConfig),
+                    nextTaskSize,
+                    this.dictionary,
+                    this.encryptedStr,
+                    numOfTasks,
+                    report,
+                    reportTasks,
+                    progressUpdate
                 ));
-                if(Thread.interrupted()){
-                    System.out.println(Thread.currentThread().getName() + " has interrupted without exception\n");
-                    return;
-                }
-            }catch (InterruptedException e){
-                System.out.println(Thread.currentThread().getName() + " has interrupted by exception thrown\n");
-                System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+            if(Thread.interrupted()){
+                System.out.println(Thread.currentThread().getName() + " has interrupted without exception\n");
                 return;
             }
             moveToNextConfig(offsetConfig, nextTaskSize);
@@ -110,26 +109,28 @@ public class TaskProducer implements Runnable{
         }
     }
 
-    private void  createTasksForMediumState(List<Integer> rotorsId){
+    private void  createTasksForMediumState(List<Integer> rotorsId) throws InterruptedException {
         for(Integer reflectorId : machineParts.getReflectors().keySet()){
             createTasksForEasyState(new ArrayList<>(rotorsId), reflectorId);
         }
     }
 
-    private void createTasksForHardState(List<Integer> rotorsId){
+    private void createTasksForHardState(List<Integer> rotorsId) throws InterruptedException{
         List<List<Integer>> idsPermutations = CalculationsUtils.allPermutationOfNElements(rotorsId);
-        idsPermutations.forEach(this::createTasksForMediumState);
+        for (List<Integer> idsPermutation : idsPermutations) {
+            createTasksForMediumState(idsPermutation);
+        }
     }
 
-    private void createTasksForImpossibleState(){
+    private void createTasksForImpossibleState() throws InterruptedException {
         Set<Integer> rotorsId = machineParts.getRotors().keySet();
         Set<Set<Integer>> allGroupsInSizeK;
         for(int i = machineParts.getRotorCount(); i <= Math.min(machineParts.getRotors().size(), 99); ++i){
             allGroupsInSizeK = CalculationsUtils.add_All_Sub_Groups_SizeK_Out_Of_N_Elements(rotorsId, i);
-            allGroupsInSizeK.forEach(group ->{
-                List<Integer> lst = new ArrayList<>(group);
-                createTasksForHardState(lst);
-            });
+            for (Set<Integer> set : allGroupsInSizeK) {
+                ArrayList<Integer> rotorsId1 = new ArrayList<>(set);
+                createTasksForHardState(rotorsId1);
+            }
         }
     }
 
@@ -165,13 +166,9 @@ public class TaskProducer implements Runnable{
         }
     }
 
-    private synchronized void isPaused(){
+    private synchronized void isPaused() throws InterruptedException {
         while (isPause.get()){
-            try {
-                this.wait(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(Thread.currentThread().getName() + " got interrupted while was paused");
-            }
+            this.wait(2000);
         }
     }
 }

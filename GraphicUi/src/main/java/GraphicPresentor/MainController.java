@@ -7,8 +7,8 @@ import GraphicPresentor.Screens.firstScreen.currentConfiguration.CurrentConfigur
 import GraphicPresentor.Screens.firstScreen.machineDetailsComponent.MachineDetailController;
 import GraphicPresentor.Screens.secondScreen.encryptDecryptComponent.EncryptDecryptController;
 import GraphicPresentor.Screens.secondScreen.statisticsComponent.StatisticsController;
-import GraphicPresentor.Screens.thridScreen.EncryptMessageComponent.BruteForceEncryptController;
-import GraphicPresentor.Screens.thridScreen.bruteForceDashBoardComponent.DashboardController;
+import GraphicPresentor.Screens.thirdScreen.EncryptMessageComponent.BruteForceEncryptController;
+import GraphicPresentor.Screens.thirdScreen.bruteForceDashBoardComponent.DashboardController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -81,7 +81,7 @@ public class MainController {
 
         bruteEncryptComponentController.setEngine(engine);
         bruteEncryptComponentController.setUiAdapter(uiAdapter);
-//        bruteEncryptComponentController.setDashboardController(bruteForceDashboardComponentController);
+        bruteEncryptComponentController.setDashboardController(bruteForceDashboardComponentController);
         uiAdapter.isConfigProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue){
                 bruteEncryptComponentController.getDecipherDetails();

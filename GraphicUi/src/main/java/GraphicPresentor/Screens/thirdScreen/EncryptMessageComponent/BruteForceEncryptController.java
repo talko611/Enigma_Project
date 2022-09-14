@@ -1,9 +1,9 @@
-package GraphicPresentor.Screens.thridScreen.EncryptMessageComponent;
+package GraphicPresentor.Screens.thirdScreen.EncryptMessageComponent;
 
 import Engine.Engine;
 import Engine.engineAnswers.EncryptDecryptMessage;
-import GraphicPresentor.Screens.thridScreen.TrieDataSrtucture.Trie;
-import GraphicPresentor.Screens.thridScreen.bruteForceDashBoardComponent.DashboardController;
+import GraphicPresentor.Screens.thirdScreen.TrieDataSrtucture.Trie;
+import GraphicPresentor.Screens.thirdScreen.bruteForceDashBoardComponent.DashboardController;
 import GraphicPresentor.UiAdapter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,7 +25,7 @@ public class BruteForceEncryptController {
     private Engine engine;
     private UiAdapter uiAdapter;
     private Trie availableWord;
-//    private DashboardController dashboardController;
+    private DashboardController dashboardController;
 
     @FXML
     void initialize(){
@@ -39,9 +39,9 @@ public class BruteForceEncryptController {
         });
     }
 
-//    public void setDashboardController(DashboardController controller) {
-//        this.dashboardController = controller;
-//    }
+    public void setDashboardController(DashboardController controller) {
+        this.dashboardController = controller;
+    }
 
     public void setEngine(Engine engine) {
         this.engine = engine;
@@ -69,6 +69,8 @@ public class BruteForceEncryptController {
         srcMessage.setText("");
         uiAdapter.bruteForceEncryptedMessageProperty().set("");
         processSuccessMessage.setText("");
+        uiAdapter.isBruteForceEncryptProcessSuccessProperty().set(false);
+        dashboardController.init();
     }
 
     @FXML
@@ -99,6 +101,7 @@ public class BruteForceEncryptController {
     void resetMachineBt(ActionEvent event) {
         engine.resetMachine();
         uiAdapter.updateMachineDetails();
+
     }
 
 }

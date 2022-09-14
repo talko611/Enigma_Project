@@ -1,7 +1,6 @@
 package Engine.DM;
 
 import Engine.DM.MyThreadPool.MyThreadPool;
-import Engine.DM.ReportTask.ReportTask;
 import Engine.DM.ResultReporter.ResultReporter;
 import Engine.DM.TaskProducer.TaskProducer;
 import Engine.engineAnswers.DmInitAnswer;
@@ -35,9 +34,7 @@ public class DecipherManager {
     private BlockingQueue<Runnable> tasks;
     private BlockingQueue<Runnable> answers;
     private String messageToDecrypt;
-    private SimpleLongProperty numberOfTasks;
-    private Object pauseObj;
-
+    private SimpleLongProperty finishedTasks;
     private Thread tasksProducer;
     private Thread resultReporter;
 
@@ -48,8 +45,7 @@ public class DecipherManager {
         this.dictionary = dictionary;
         this.maxAgents = maxAgents;
         this.forbiddenChars = forbiddenChars;
-        this.numberOfTasks = new SimpleLongProperty(0);
-        this.pauseObj = new Object();
+        this.finishedTasks = new SimpleLongProperty(0);
     }
 
 
@@ -57,6 +53,7 @@ public class DecipherManager {
         DmInitAnswer answer = new DmInitAnswer();
         this.taskSize = taskSize;
         this.difficulty = taskDifficulty;
+        finishedTasks.set(0);
         this.tasks = new ArrayBlockingQueue<>(1000);
         this.agents= new MyThreadPool(numberOfAgentsAllowed, numberOfAgentsAllowed, 0L, TimeUnit.MILLISECONDS, this.tasks, new ThreadFactory() {
             private int threadCounter = 1;
@@ -70,7 +67,8 @@ public class DecipherManager {
         this.answers = new LinkedBlockingQueue<>();
         this.messageToDecrypt= encryptedStr;
         try{
-            answer.setNumOfTasks(calculateNumberOfTasks());
+            totalTasks = calculateNumberOfTasks();
+            answer.setNumOfTasks(totalTasks);
             answer.setSuccess(true);
             answer.setMessage("DM set successfully. Read to start");
         }catch (InputMismatchException e){
@@ -82,9 +80,9 @@ public class DecipherManager {
 
     public void startBruteForce(BiConsumer<String, Pair<String, String>> reportUpdate , Consumer<Integer> progressUpdate, SimpleBooleanProperty isPause){
         agents.prestartAllCoreThreads();
-        numberOfTasks.addListener((observable, oldValue, newValue) -> {
+        finishedTasks.addListener((observable, oldValue, newValue) -> {
             if(newValue.intValue() == 0){
-                System.out.println("Listener Finish Tasks");
+                System.out.println("Listener: Finish Tasks");
             }
             if(newValue.intValue() < 0){
                 System.out.println("Number of tasks negative");
@@ -92,10 +90,10 @@ public class DecipherManager {
         });
 
         tasksProducer = new Thread(new TaskProducer(machineParts, difficulty, dictionary, messageToDecrypt, taskSize,
-                                    tasks, rotorsId, reflectorId, numberOfTasks, answers, reportUpdate, progressUpdate, isPause),"Task Producer");
+                                    tasks, rotorsId, reflectorId, finishedTasks, answers, reportUpdate, progressUpdate, isPause),"Task Producer");
 
         tasksProducer.start();
-        resultReporter = new Thread(new ResultReporter(answers, agents, tasks, numberOfTasks, isPause), "Result Reporter");
+        resultReporter = new Thread(new ResultReporter(answers,finishedTasks, isPause, totalTasks,agents), "Result Reporter");
         resultReporter.start();
     }
 

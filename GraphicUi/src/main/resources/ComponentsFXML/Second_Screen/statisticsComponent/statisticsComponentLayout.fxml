@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.Screens.secondScreen.statisticsComponent.StatisticsController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GraphicPresentor.Screens.secondScreen.statisticsComponent.StatisticsController">
    <content>
       <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="600.0">
          <children>
@@ -20,11 +20,11 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </Label>
-            <TableView fx:id="statisticsTb" VBox.vgrow="ALWAYS">
+            <TableView fx:id="statisticsTb" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="srcCol" prefWidth="100.0" text="Source Message" />
                 <TableColumn fx:id="encryptCol" prefWidth="100.0" text="Encrypted Message" />
-                  <TableColumn fx:id="durationCol" text="Encryption Time" />
+                  <TableColumn fx:id="durationCol" text="Encryption Time(ns)" />
                   <TableColumn fx:id="configurationCol" prefWidth="200.0" text="Initial Machine configuration" />
               </columns>
                <columnResizePolicy>

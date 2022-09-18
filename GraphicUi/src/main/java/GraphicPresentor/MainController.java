@@ -113,6 +113,7 @@ public class MainController {
             uiAdapter.isConfigProperty().set(false);
             uiAdapter.updateMachineDetails();
         }
+        encryptDecryptComponentController.loadKeyboard();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -136,6 +137,24 @@ public class MainController {
     @FXML
     void bruteEncryptTabClicked(){
         bruteEncryptComponentController.initSuccessMessage();
+    }
+
+    @FXML
+    void machineTabClicked(){
+        if(uiAdapter.isLoadedProperty().get()){
+            machineConfigureComponentController.setIsMachineConfigureText("");
+            machineConfigureComponentController.initData();
+            if(uiAdapter.isConfigProperty().get()){
+                currentConfigurationTabComponentController.getCurrentConfiguration();
+            }
+        }
+    }
+
+    @FXML
+    void encryptTabClicked(){
+        if(uiAdapter.isConfigProperty().get()){
+            statisticsComponentController.setStatistics();
+        }
     }
 
 }

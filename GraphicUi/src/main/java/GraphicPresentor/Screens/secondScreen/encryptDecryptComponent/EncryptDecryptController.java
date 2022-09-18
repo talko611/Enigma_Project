@@ -3,12 +3,21 @@ package GraphicPresentor.Screens.secondScreen.encryptDecryptComponent;
 
 import Engine.Engine;
 import Engine.engineAnswers.EncryptDecryptMessage;
-import Engine.engineAnswers.MachineDetailsAnswer;
+import GraphicPresentor.Screens.secondScreen.keyboardButtons.KeyboardButtonController;
 import GraphicPresentor.UiAdapter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.TilePane;
+import machine.parts.keyboard.Keyboard;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EncryptDecryptController {
 
@@ -23,10 +32,14 @@ public class EncryptDecryptController {
     @FXML private Button clearBt;
     @FXML private Button restBt;
     @FXML private Button doneBt;
+    @FXML private FlowPane lightKeyBoard;
+    @FXML private FlowPane realKeyboard;
 
     private Engine engine;
     private UiAdapter uiAdapter;
     private long duration = 0;
+
+    Map<String, TilePane> lightsKeyboardMapping;
 
 
     public void setEngine(Engine engine){ this.engine = engine;}
@@ -89,17 +102,68 @@ public class EncryptDecryptController {
     @FXML
     void typedFromKeyboard(KeyEvent event){
         if(typeRb.isSelected()){
-            EncryptDecryptMessage message = engine.encryptDecryptMessage(event.getCharacter(), false, false);
+            EncryptDecryptMessage message = engine.encryptDecryptMessage(event.getText(), false, false);
             if(message.getSuccess()){
                 encryptedTextField.setText(encryptedTextField.getText() == null ? "" : encryptedTextField.getText() + message.getOut());
                 duration += message.getDuration();
+                turnOnLightButton(message.getOut());
             }
             uiAdapter.setCurrentConfiguration(engine.getMachineDetails().getCurrentState());
         }
     }
+
+    @FXML
+    void typeStopped(KeyEvent event){
+        turnOffLightButton(String.valueOf(encryptedTextField.getText().charAt(encryptedTextField.getText().length() -1)));
+    }
+
     @FXML
     void clickedRb(ActionEvent event){
         clearButtonClicked(event);
+    }
+
+    public void loadKeyboard()  {
+        if(uiAdapter.isLoadedProperty().get()){
+            URL urlReal = getClass().getResource("/ComponentsFXML/Second_Screen/keyboardButtonComponent/keyBoardButtonLayout.fxml");
+            URL urlLight = getClass().getResource("/ComponentsFXML/Second_Screen/keyboardButtonComponent/lightKeyBoardButton.fxml");
+            Keyboard keyboard = engine.getMachine().getKeyboard();
+            lightsKeyboardMapping = new HashMap<>(keyboard.getABC().size());
+            keyboard.getABC().keySet().forEach(i -> {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(urlReal);
+                    TilePane realButton = fxmlLoader.load();
+                    KeyboardButtonController currentController = fxmlLoader.getController();
+                    currentController.setIsTypeStateSelected(typeRb.selectedProperty());
+                    currentController.connectToParentComponentEvent(srcTextField);
+                    Label current = (Label) realButton.getChildren().get(0);
+                    current.setText(i);
+                    realKeyboard.getChildren().add(realButton);
+
+                    fxmlLoader = new FXMLLoader(urlLight);
+                    TilePane lightButton = fxmlLoader.load();
+                    lightButton.setStyle("-fx-background-color: #434346");
+                    lightButton.setStyle("-fx-border-color: White");
+                    lightsKeyboardMapping.put(i, lightButton);
+                    current = (Label) lightButton.getChildren().get(0);
+                    current.setText(i);
+                    lightKeyBoard.getChildren().add(lightButton);
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                    System.out.println(e.getStackTrace());
+                }
+            });
+        }
+    }
+
+    private void turnOnLightButton(String letter){
+        TilePane button = lightsKeyboardMapping.get(letter.toUpperCase());
+        button.setStyle("-fx-background-color: Yellow");
+    }
+
+    private void turnOffLightButton(String letter){
+        TilePane button = lightsKeyboardMapping.get(letter.toUpperCase());
+        button.setStyle("-fx-background-color: #434346");
+        button.setStyle("-fx-border-color : White");
     }
 }
 

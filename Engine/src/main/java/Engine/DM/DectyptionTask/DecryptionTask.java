@@ -106,6 +106,9 @@ public class DecryptionTask implements Runnable{
 
     private boolean isOptionalDecryption(String decryptedStr){
         String[] words = decryptedStr.split(" ");
+        if(words.length == 0){
+            return false;
+        }
         for(String word : words){
             if(!dictionary.contains(word)){
                 return false;

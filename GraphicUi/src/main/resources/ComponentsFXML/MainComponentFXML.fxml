@@ -43,7 +43,7 @@
          <center>
             <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
               <tabs>
-                  <Tab fx:id="machineTab" closable="false" disable="true" text="Machine">
+                  <Tab fx:id="machineTab" closable="false" disable="true" onSelectionChanged="#machineTabClicked" text="Machine">
                       <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" side="LEFT" tabClosingPolicy="UNAVAILABLE">
                         <tabs>
                             <Tab fx:id="machineDetailsTab" closable="false" text="Deatails">
@@ -58,7 +58,7 @@
                         </tabs>
                       </TabPane>
                   </Tab>
-                <Tab fx:id="encryptDecryptTab" closable="false" disable="true" text="Encrypt/Decrypt">
+                <Tab fx:id="encryptDecryptTab" closable="false" disable="true" onSelectionChanged="#encryptTabClicked" text="Encrypt/Decrypt">
                      <content>
                         <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" side="LEFT" tabClosingPolicy="UNAVAILABLE">
                           <tabs>

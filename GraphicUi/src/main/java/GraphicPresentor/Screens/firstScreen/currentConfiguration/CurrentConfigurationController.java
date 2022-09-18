@@ -53,7 +53,6 @@ public class CurrentConfigurationController {
 
     public void getCurrentConfiguration(){
         String currentConfigurationLine = uiAdapter.getCurrentConfiguration();
-        System.out.println(currentConfigurationLine);
         List<String> splitedConfigLine = Arrays.asList(currentConfigurationLine.split("[<>]"));
         List<String> configLineParts = splitedConfigLine.stream().filter(i-> !i.equals("")).collect(Collectors.toList());
         List<String> rotorsIds = cleanRotorId(configLineParts.get(0));

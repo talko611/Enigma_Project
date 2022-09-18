@@ -71,9 +71,9 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </TextField>
-                        <ScrollPane>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" hmax="-1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vmax="-1.0">
                            <content>
-                              <ListView fx:id="wordList" prefHeight="236.0" prefWidth="200.0" />
+                              <ListView fx:id="wordList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="236.0" prefWidth="200.0" />
                            </content>
                         </ScrollPane>
                      </children>

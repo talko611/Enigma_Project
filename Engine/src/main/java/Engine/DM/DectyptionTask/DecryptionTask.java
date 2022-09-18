@@ -4,13 +4,11 @@ package Engine.DM.DectyptionTask;
 import Engine.DM.ReportTask.ReportTask;
 import Engine.configuration.ConfigurationImp;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.util.Pair;
 import machine.Machine;
 import machine.parts.keyboard.Keyboard;
 import machine.parts.rotor.Rotor;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 import java.util.Set;

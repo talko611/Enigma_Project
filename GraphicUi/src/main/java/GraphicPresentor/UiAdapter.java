@@ -6,17 +6,17 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class UiAdapter {
-    private SimpleBooleanProperty isLoaded;
-    private SimpleBooleanProperty isConfig;
-    private SimpleStringProperty initialConfiguration;
-    private SimpleStringProperty currentConfiguration;
-    private SimpleStringProperty usedVsPossibleRotors;
-    private SimpleStringProperty processedMessagesNum;
-    private SimpleStringProperty reflectorsNum;
-    private SimpleStringProperty bruteForceEncryptedMessage;
-    private SimpleBooleanProperty isBruteForceEncryptProcessSuccess;
+    private final SimpleBooleanProperty isLoaded;
+    private final SimpleBooleanProperty isConfig;
+    private final SimpleStringProperty initialConfiguration;
+    private final SimpleStringProperty currentConfiguration;
+    private final SimpleStringProperty usedVsPossibleRotors;
+    private final SimpleStringProperty processedMessagesNum;
+    private final SimpleStringProperty reflectorsNum;
+    private final SimpleStringProperty bruteForceEncryptedMessage;
+    private final SimpleBooleanProperty isBruteForceEncryptProcessSuccess;
 
-    private Engine engine;
+    private final Engine engine;
 
 
     public UiAdapter(Engine engine){
@@ -38,10 +38,6 @@ public class UiAdapter {
 
     public SimpleStringProperty reflectorsNumProperty() {
         return reflectorsNum;
-    }
-
-    public void setReflectorsNum(String reflectorsNum) {
-        this.reflectorsNum.set(reflectorsNum);
     }
 
     public void setProcessedMessagesNum(String processedMessagesNum) {
@@ -91,9 +87,7 @@ public class UiAdapter {
     public SimpleBooleanProperty isBruteForceEncryptProcessSuccessProperty() {
         return isBruteForceEncryptProcessSuccess;
     }
-    public void setIsBruteForceEncryptProcessSuccess(boolean isBruteForceEncryptProcessSuccess) {
-        this.isBruteForceEncryptProcessSuccess.set(isBruteForceEncryptProcessSuccess);
-    }
+
 
     public void updateMachineDetails(){
         MachineDetailsAnswer answer = engine.getMachineDetails();

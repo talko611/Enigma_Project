@@ -21,6 +21,7 @@ public class Trie {
     public Trie(){
         root = new TrieNode("NA",false); //Set always with dummy root;
     }
+
     public void addWord(String word){
         TrieNode currentNode = root;
         int counter = 0;
@@ -65,9 +66,7 @@ public class Trie {
         if(root.children.isEmpty())
             return;
 
-        root.children.forEach((ch, node) -> {
-            getAllChildrenHelper(children, new StringBuilder(currenPrefix), node);
-        });
+        root.children.forEach((ch, node) -> getAllChildrenHelper(children, new StringBuilder(currenPrefix), node));
 
     }
 }

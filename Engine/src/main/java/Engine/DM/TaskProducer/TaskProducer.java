@@ -30,11 +30,11 @@ public class TaskProducer implements Runnable{
     private final BlockingQueue<Runnable> decryptionTasks;
     private final List<Integer> rotorsId;
     private final int reflectorId;
-    private SimpleLongProperty numOfTasks;
-    private BlockingQueue<Runnable> reportTasks;
-    private BiConsumer<String, Pair<String, String>> report;
-    private  Consumer<Integer> progressUpdate;
-    private SimpleBooleanProperty isPause;
+    private final SimpleLongProperty numOfTasks;
+    private final BlockingQueue<Runnable> reportTasks;
+    private final BiConsumer<String, Pair<String, String>> report;
+    private final Consumer<Integer> progressUpdate;
+    private final SimpleBooleanProperty isPause;
 
 
 
@@ -85,7 +85,7 @@ public class TaskProducer implements Runnable{
         long offsetsPermutationsNum = (long) Math.pow(machineParts.getKeyboard().getABC().size(), rotorsId.size());
         List<Integer> offsetConfig = new ArrayList<>(Collections.nCopies(rotorsId.size(),0));
         int counter = 0;
-        int nextTaskSize = 0;
+        int nextTaskSize;
         while( counter < offsetsPermutationsNum){
             isPaused();
             nextTaskSize = offsetsPermutationsNum - counter < taskSize ? (int) (offsetsPermutationsNum - counter) : taskSize;

@@ -1,7 +1,6 @@
 package Engine.DM.MyThreadPool;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.BlockingQueue;

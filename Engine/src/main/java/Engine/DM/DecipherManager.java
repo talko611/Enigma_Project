@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 public class DecipherManager {
     private Set<String> dictionary;
-    private  String forbiddenChars;
-    private  int maxAgents;
+    private final String forbiddenChars;
+    private final int maxAgents;
     private EnigmaParts machineParts;
     private List<Integer> rotorsId;
     private int reflectorId;
@@ -34,7 +34,7 @@ public class DecipherManager {
     private BlockingQueue<Runnable> tasks;
     private BlockingQueue<Runnable> answers;
     private String messageToDecrypt;
-    private SimpleLongProperty finishedTasks;
+    private final SimpleLongProperty finishedTasks;
     private Thread tasksProducer;
     private Thread resultReporter;
 
@@ -47,7 +47,6 @@ public class DecipherManager {
         this.forbiddenChars = forbiddenChars;
         this.finishedTasks = new SimpleLongProperty(0);
     }
-
 
     public DmInitAnswer initializeDm(DmTaskDifficulty taskDifficulty, String encryptedStr, int numberOfAgentsAllowed, int taskSize){
         DmInitAnswer answer = new DmInitAnswer();
@@ -80,15 +79,6 @@ public class DecipherManager {
 
     public void startBruteForce(BiConsumer<String, Pair<String, String>> reportUpdate , Consumer<Integer> progressUpdate, SimpleBooleanProperty isPause){
         agents.prestartAllCoreThreads();
-        finishedTasks.addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() == 0){
-                System.out.println("Listener: Finish Tasks");
-            }
-            if(newValue.intValue() < 0){
-                System.out.println("Number of tasks negative");
-            }
-        });
-
         tasksProducer = new Thread(new TaskProducer(machineParts, difficulty, dictionary, messageToDecrypt, taskSize,
                                     tasks, rotorsId, reflectorId, finishedTasks, answers, reportUpdate, progressUpdate, isPause),"Task Producer");
 
@@ -106,6 +96,7 @@ public class DecipherManager {
     public void pauseWork(){
         agents.pause();
     }
+
     public void resumeWork(){
         agents.resume();
     }
@@ -180,7 +171,4 @@ public class DecipherManager {
         builder.deleteCharAt(builder.toString().length() -1);
         return new Pair<>(true, builder.toString());
     }
-
-
-
 }

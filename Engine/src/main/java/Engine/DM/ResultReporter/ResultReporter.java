@@ -5,15 +5,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+
 
 public class ResultReporter implements Runnable {
 
-    private BlockingQueue<Runnable> answers;
-    private SimpleLongProperty finishedTasks;
-    private SimpleBooleanProperty isPause;
-    private long totalWork;
-    private MyThreadPool agents;
+    private final BlockingQueue<Runnable> answers;
+    private final SimpleLongProperty finishedTasks;
+    private final SimpleBooleanProperty isPause;
+    private final long totalWork;
+    private final MyThreadPool agents;
 
     public ResultReporter(BlockingQueue<Runnable> answers, SimpleLongProperty finishedTasks, SimpleBooleanProperty isPause, long totalWork, MyThreadPool agents){
         this.answers = answers;
@@ -25,11 +25,10 @@ public class ResultReporter implements Runnable {
 
     @Override
     public void run() {
-        String errorMessage;
         try {
-//            Thread.sleep(3000); //To give some time for the producer to work
             System.out.println(Thread.currentThread().getName() + " start listening to results");
             while(!answers.isEmpty() || totalWork != finishedTasks.get()){
+                isPaused();
                 if(!answers.isEmpty()){
                     Runnable update = answers.take();
                     update.run();

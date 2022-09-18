@@ -9,21 +9,22 @@ import java.util.function.Consumer;
 
 public class TimerTask extends Task<Void> {
 
-    private DoubleProperty progress;
-    private Consumer<String> setTime;
-    private SimpleBooleanProperty isPause;
+    private final DoubleProperty progress;
+    private final Consumer<String> setTime;
+    private final SimpleBooleanProperty isPause;
 
     public TimerTask(DoubleProperty progress , Consumer<String> setTime, SimpleBooleanProperty isPaused){
         this.progress = progress;
         this.setTime = setTime;
         this.isPause = isPaused;
     }
+
     @Override
-    protected Void call() throws Exception {
+    protected Void call() {
         int  timer = 0;
         while(progress.getValue() != 1){
             int finalTimer = timer;
-            Platform.runLater(()->setTime.accept(String.valueOf(finalTimer) + " Sec"));
+            Platform.runLater(()->setTime.accept(finalTimer + " Sec"));
             if(!isPause.get()){
                 ++timer;
             }

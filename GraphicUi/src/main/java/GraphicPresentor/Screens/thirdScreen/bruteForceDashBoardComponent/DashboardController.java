@@ -1,6 +1,6 @@
 package GraphicPresentor.Screens.thirdScreen.bruteForceDashBoardComponent;
 
-import Engine.Engine;
+import Engine.*;
 import Engine.engineAnswers.DmAnswer;
 import Engine.engineAnswers.DmInitAnswer;
 import Engine.enums.DmTaskDifficulty;

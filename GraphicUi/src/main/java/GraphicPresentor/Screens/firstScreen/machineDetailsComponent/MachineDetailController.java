@@ -1,7 +1,6 @@
 package GraphicPresentor.Screens.firstScreen.machineDetailsComponent;
 
-import Engine.Engine;
-import Engine.engineAnswers.MachineDetailsAnswer;
+
 import GraphicPresentor.UiAdapter;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

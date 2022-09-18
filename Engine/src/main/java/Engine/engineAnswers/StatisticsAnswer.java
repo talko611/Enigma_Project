@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StatisticsAnswer {
-    private Map<String, List<EncryptDecryptMessage>> stats;
+    private final Map<String, List<EncryptDecryptMessage>> stats;
 
     public StatisticsAnswer(Map<String, List<EncryptDecryptMessage>> stats) {
         this.stats = stats;

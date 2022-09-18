@@ -8,9 +8,9 @@ import java.util.function.BiConsumer;
 
 public class ReportTask implements Runnable {
 
-    private String configuration;
-    private String agentNum;
-    private String decryption;
+    private final String configuration;
+    private final String agentNum;
+    private final String decryption;
 
     BiConsumer<String, Pair<String, String>> update;
 

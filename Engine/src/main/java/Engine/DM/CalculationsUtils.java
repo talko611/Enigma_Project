@@ -37,7 +37,4 @@ public class CalculationsUtils {
     static public  Set<Set<Integer>> add_All_Sub_Groups_SizeK_Out_Of_N_Elements(Set<Integer> elements, int groupSize){
         return Sets.combinations(elements, groupSize);
     }
-
-
-
 }

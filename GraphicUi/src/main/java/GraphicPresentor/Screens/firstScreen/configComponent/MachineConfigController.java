@@ -1,6 +1,6 @@
 package GraphicPresentor.Screens.firstScreen.configComponent;
 
-import Engine.*;
+import Engine.Engine;
 import GraphicPresentor.*;
 import Engine.enigmaParts.EnigmaParts;
 import Engine.enums.ReflectorGreekNums;
@@ -55,7 +55,8 @@ public class MachineConfigController {
         String val1 = plugChoice1.getValue();
         String val2 = plugChoice2.getValue();
         if(val1 == null || val2 == null){
-            plugErrorMs.setText("Cannot cannot plug to itself");
+            plugErrorMs.visibleProperty().setValue(true);
+            plugErrorMs.setText("Cannot add empty plugs");
         }
         else if(!val1.equals(val2)){
             plugErrorMs.visibleProperty().set(false);
@@ -66,6 +67,7 @@ public class MachineConfigController {
             plugChoice2.getItems().remove(val2);
             plugErrorMs.setText("");
         }else{
+            plugErrorMs.visibleProperty().setValue(true);
             plugErrorMs.setText("Cannot plug the same letter");
         }
     }
@@ -91,6 +93,7 @@ public class MachineConfigController {
         this.engine.autoConfig();
         uiAdapter.setIsConfig(true);
         uiAdapter.updateMachineDetails();
+        plugErrorMs.visibleProperty().set(false);
         isMachineConfigureLb.setText("Machine configure successfully");
         initData();//Ready component to next configuration
     }
@@ -118,7 +121,7 @@ public class MachineConfigController {
         EnigmaParts enigmaParts = this.engine.getEnigmaParts();
         minimalRotorNum = enigmaParts.getRotorCount();
         rotorIdCh.getItems().remove(0, rotorIdCh.getItems().size());
-        enigmaParts.getRotors().forEach((id,rotor) -> {rotorIdCh.getItems().add(id);});
+        enigmaParts.getRotors().forEach((id,rotor) -> rotorIdCh.getItems().add(id));
         reflectorCh.getItems().remove(0, reflectorCh.getItems().size());
         enigmaParts.getReflectors().forEach((num, reflector) -> reflectorCh.getItems().add(reflector.getSymbol()));
         plugChoice1.getItems().remove(0, plugChoice1.getItems().size());
@@ -134,6 +137,8 @@ public class MachineConfigController {
         rotorIdCh.setValue(null);
         rotorOffsetCh.setValue(null);
         reflectorCh.setValue(null);
+        plugChoice1.setValue(null);
+        plugChoice2.setValue(null);
         rotorCount = 0;
         rotorLb.setText("Rotors will be inserted from right to left");
     }

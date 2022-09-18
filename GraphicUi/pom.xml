@@ -23,11 +23,6 @@
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>11.1.0</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -49,7 +44,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>Main.Main</mainClass>
+                            <mainClass>GraphicPresentor.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

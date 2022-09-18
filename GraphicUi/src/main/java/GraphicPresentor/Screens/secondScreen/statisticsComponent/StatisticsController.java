@@ -59,7 +59,7 @@ public class StatisticsController {
         public UiStatistics (String src, String encrypted, long duration, String configuration){
             this.src = new SimpleStringProperty(src);
             this.encrypted = new SimpleStringProperty(encrypted);
-            this.duration = new SimpleStringProperty(String.valueOf(duration));
+            this.duration = new SimpleStringProperty(String.format("%,d",duration));
             this.configuration = new SimpleStringProperty(configuration);
         }
 

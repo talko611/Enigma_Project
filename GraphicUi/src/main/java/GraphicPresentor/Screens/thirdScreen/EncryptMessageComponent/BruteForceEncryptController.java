@@ -84,6 +84,7 @@ public class BruteForceEncryptController {
                 uiAdapter.bruteForceEncryptedMessageProperty().set(answer.getOut());
                 uiAdapter.isBruteForceEncryptProcessSuccessProperty().set(true);
                 uiAdapter.updateMachineDetails();
+                dashboardController.init();
             } else {
                 processSuccessMessage.setText(answer.getError());
                 uiAdapter.isBruteForceEncryptProcessSuccessProperty().set(false);

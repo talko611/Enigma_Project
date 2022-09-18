@@ -38,7 +38,7 @@
                               <Insets bottom="50.0" />
                            </VBox.margin>
                         </TextField>
-                        <TextField fx:id="encryptedTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="400.0" promptText="Emcrypted" />
+                        <TextField fx:id="encryptedTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="400.0" promptText="Encrypted" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">

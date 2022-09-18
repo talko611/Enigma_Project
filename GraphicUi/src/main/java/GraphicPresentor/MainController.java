@@ -106,6 +106,7 @@ public class MainController {
             return;
         }
         String absolutePath = selectedFile.getAbsolutePath();
+
         InputOperationAnswer answer = this.engine.loadFromFile(absolutePath);
         uiAdapter.setIsLoaded(answer.isSuccess());
         loadFileAnswerLabel.setText(answer.getMessage());
@@ -114,6 +115,7 @@ public class MainController {
             uiAdapter.updateMachineDetails();
         }
         encryptDecryptComponentController.loadKeyboard();
+
     }
 
     public void setPrimaryStage(Stage primaryStage) {

@@ -111,11 +111,10 @@ public class MainController {
         uiAdapter.setIsLoaded(answer.isSuccess());
         loadFileAnswerLabel.setText(answer.getMessage());
         if(answer.isSuccess()){
-            uiAdapter.isConfigProperty().set(false);
             uiAdapter.updateMachineDetails();
+            encryptDecryptComponentController.loadKeyboard();
         }
-        encryptDecryptComponentController.loadKeyboard();
-
+        uiAdapter.isConfigProperty().set(false);
     }
 
     public void setPrimaryStage(Stage primaryStage) {

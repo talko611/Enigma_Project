@@ -42,7 +42,6 @@ public class DashboardController {
 
 
 
-//    boolean isSet;
     private UiAdapter uiAdapter;
     private Engine engine;
     private ObservableList<UiBruteForceResults> data;
@@ -158,6 +157,10 @@ public class DashboardController {
         try {
             if(difficultyCb.getValue() == null){
                 userLabel.setText("Please choose difficulty level");
+                return;
+            }
+            if(Integer.parseInt(taskSizeTb.getText()) <= 0){
+                userLabel.setText("please enter only numbers bigger then 0");
                 return;
             }
             DmInitAnswer answer = engine.initializeDm(difficultyCb.getValue(),

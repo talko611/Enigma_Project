@@ -130,6 +130,8 @@ public class EncryptDecryptController {
 
     public void loadKeyboard()  {
         if(uiAdapter.isLoadedProperty().get()){
+            realKeyboard.getChildren().clear();
+            lightKeyBoard.getChildren().clear();
             URL urlReal = getClass().getSuperclass().getResource("/ComponentsFXML/Second_Screen/keyboardButtonComponent/keyBoardButtonLayout.fxml");
             URL urlLight = getClass().getSuperclass().getResource("/ComponentsFXML/Second_Screen/keyboardButtonComponent/lightKeyboardButton.fxml");
             Keyboard keyboard = engine.getMachine().getKeyboard();

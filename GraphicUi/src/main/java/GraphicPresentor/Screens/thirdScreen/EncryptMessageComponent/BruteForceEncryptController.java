@@ -31,7 +31,7 @@ public class BruteForceEncryptController {
     void initialize(){
         dictionarySearchBox.textProperty().addListener(((observable, oldValue, newValue) -> {
             wordList.getItems().clear();
-            wordList.getItems().addAll(availableWord.getAllChildren(newValue));
+            wordList.getItems().addAll(availableWord.getAllChildren(newValue.toLowerCase()));
         }));
         wordList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             srcMessage.setText((srcMessage.getText() + " " +newValue));
